@@ -573,13 +573,7 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 #intro button { cursor:pointer; }
 #intro button:focus-visible, #intro input:focus-visible, #intro a:focus-visible { outline:3px solid #ffb36e; outline-offset:4px; }
 #intro .landing-container { width:min(1200px, calc(100% - 88px)); margin-inline:auto; }
-#intro .landing-site-header { position:relative; z-index:10; height:88px; display:flex; align-items:center; justify-content:space-between; gap:24px; border-bottom:1px solid var(--js-line); }
-#intro .brand-mark { display:flex; align-items:center; gap:11px; font-weight:900; letter-spacing:-.06em; font-size:23px; white-space:nowrap; }
-#intro .brand-symbol { display:inline-grid; place-items:center; width:36px; height:36px; background:var(--js-blue); color:#fff; border-radius:13px; font-size:20px; box-shadow:0 4px 14px rgba(47,109,181,.13); }
-#intro .brand-sub { font-size:12px; color:var(--js-muted); letter-spacing:.02em; font-weight:700; border-left:1px solid #d7dfe7; padding-left:14px; margin-left:4px; }
-#intro .header-links { display:flex; align-items:center; gap:30px; }
-#intro .header-link { color:#526174; font-size:14px; font-weight:700; text-decoration:none; border:0; background:none; padding:12px 0; }
-#intro .header-link:hover { color:var(--js-blue); }
+#menu .menu-navigation { display:flex; flex-wrap:wrap; gap:8px; }
 #intro .landing-primary, #intro .landing-secondary { display:inline-flex; align-items:center; justify-content:center; gap:12px; border-radius:14px; padding:15px 22px; font-weight:800; font-size:15px; white-space:nowrap; border:1px solid transparent; transition:transform .2s ease, background-color .2s ease,box-shadow .2s ease; }
 #intro .landing-primary { background:var(--js-orange); color:#fff; box-shadow:0 10px 20px rgba(255,122,41,.15); }
 #intro .landing-primary:hover { background:#ea6720; transform:translateY(-2px); }
@@ -589,15 +583,13 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 #intro .section-eyebrow:before { content:""; display:inline-block; width:7px; height:7px; border-radius:99px; background:var(--js-orange); }
 #intro .section-heading { font-size:clamp(33px, 3.5vw, 48px); line-height:1.21; letter-spacing:-.055em; font-weight:850; word-break:keep-all; }
 #intro .section-desc { color:var(--js-muted); font-size:17px; line-height:1.9; word-break:keep-all; }
-#intro .landing-hero { min-height:min(850px,calc(100svh - 88px)); padding-top:64px; padding-bottom:68px; display:grid; grid-template-columns:1.07fr .93fr; gap:42px; align-items:center; }
+#intro .landing-hero { min-height:min(850px,100svh); padding-top:64px; padding-bottom:68px; display:grid; grid-template-columns:1.07fr .93fr; gap:42px; align-items:center; }
 #intro .hero-copy { position:relative; z-index:1; padding-bottom:38px; }
 #intro .hero-heading { font-weight:850; letter-spacing:-.075em; line-height:1.15; font-size:clamp(49px, 4.8vw, 72px); margin:25px 0 22px; word-break:keep-all; }
 #intro .hero-heading .line { display:block; }
 #intro .hero-heading em { font-style:normal; color:var(--js-blue); }
 #intro .hero-lead { color:#64748b; font-size:18px; line-height:1.86; letter-spacing:-.02em; word-break:keep-all; max-width:520px; }
 #intro .hero-actions { display:flex; gap:11px; margin-top:35px; flex-wrap:wrap; }
-#intro .hero-footnote { display:flex; gap:12px; align-items:center; color:#8b9bab; font-size:13px; margin-top:58px; }
-#intro .hero-footnote .scroll-line { height:1px; width:45px; background:#b9c9d6; }
 #intro .hero-art { position:relative; align-self:end; display:grid; place-items:end center; min-height:550px; }
 #intro .hero-art .hero-caption { position:absolute; right:0; top:34px; color:#8c9bad; font-size:12px; font-weight:800; letter-spacing:.12em; }
 #intro .mascot-stage { width:min(100%,480px); position:relative; margin-inline:auto; cursor:default; transform-origin:50% 86%; transition:transform 800ms cubic-bezier(.2,.8,.2,1); }
@@ -706,19 +698,12 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 @media(max-width:720px){
  #intro { font-size:15px; }
  #intro .landing-container { width:calc(100% - 38px); }
- #intro .landing-site-header { height:69px; }
- #intro .brand-mark { font-size:20px; }
- #intro .brand-symbol { width:31px; height:31px; font-size:18px; border-radius:10px; }
- #intro .brand-sub, #intro .header-links .header-link { display:none; }
- #intro .header-links { gap:0; }
- #intro .header-links .landing-primary { font-size:12px; padding:11px 13px; border-radius:10px; box-shadow:none; }
  #intro .landing-hero { grid-template-columns:1fr; gap:0; min-height:unset; padding-top:65px; padding-bottom:65px; }
  #intro .hero-copy { padding:0; }
  #intro .hero-heading { font-size:clamp(42px,10vw,59px); margin-top:23px; }
  #intro .hero-lead { font-size:16px; }
  #intro .hero-actions { margin-top:27px; }
  #intro .hero-actions button { flex:1 1 auto; }
- #intro .hero-footnote { margin-top:35px; }
  #intro .hero-art { min-height:0; margin-top:23px; padding:0 6%; }
  #intro .mascot-stage { width:min(100%,340px); }
  #intro .hero-art .hero-caption { top:25px; right:4px; font-size:10px; }
@@ -783,22 +768,13 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 
   <!-- 시작 화면 (기존 test.html) -->
   <section id="intro">
-  <!-- JANGSONI 2.0 LANDING: all original form IDs, search logic, and data-go routes are preserved. -->
-  <header class="landing-site-header landing-container">
-    <div class="brand-mark"><span class="brand-symbol" aria-hidden="true">J</span>장손이<span class="brand-sub">AI CLAIM ASSISTANT</span></div>
-    <nav class="header-links" aria-label="소개 페이지 이동">
-      <button type="button" class="header-link" data-scroll-target="landing-journey">기능 둘러보기</button>
-      <button type="button" class="landing-primary" data-scroll-target="analysis-workbench">사건 분석 시작하기 <span aria-hidden="true">↗</span></button>
-    </nav>
-  </header>
   <main id="landing-main">
     <section class="landing-hero landing-container" id="landing-welcome" aria-labelledby="hero-title">
       <div class="hero-copy">
         <span class="section-eyebrow">당신 곁의 작은 손해사정 파트너</span>
         <h1 class="hero-heading" id="hero-title"><span class="line">복잡한 손해사정,</span><span class="line"><em>장손이</em>와 차근차근.</span></h1>
         <p class="hero-lead">안녕하세요! 저는 장손이예요.<br>보험 약관부터 진단 자료, 판례까지.<br>필요한 정보를 하나씩 함께 살펴볼게요.</p>
-        <div class="hero-actions"><button class="landing-primary" type="button" data-scroll-target="analysis-workbench">사건 분석 시작하기 <span aria-hidden="true">↗</span></button><button class="landing-secondary" type="button" data-scroll-target="landing-about">장손이 알아보기 <span aria-hidden="true">↓</span></button></div>
-        <div class="hero-footnote"><span class="scroll-line" aria-hidden="true"></span>천천히 아래로 내려와 주세요</div>
+        <div class="hero-actions"><button class="landing-primary" type="button" data-scroll-target="analysis-workbench">사건 분석 시작하기 <span aria-hidden="true">↓</span></button><button class="landing-secondary" id="show-tour" type="button" aria-controls="landing-tour" aria-expanded="false" data-scroll-target="landing-about">장손이와 함께 둘러보기 <span aria-hidden="true">↓</span></button></div>
       </div>
       <div class="hero-art"><span class="hero-caption">MEET JANGSONI ✳</span>
         <div class="mascot-stage" role="img" aria-label="안경을 쓰고 청구 서류와 돋보기를 든 하늘색 수달 캐릭터 장손이">
@@ -808,9 +784,10 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
         <div class="hero-aside" aria-hidden="true"><span class="symbol">✦</span><span><strong>음… 같이 찾아볼까요?</strong><small>조금 느리지만, 꼼꼼하게!</small></span></div>
       </div>
     </section>
+    <div id="landing-tour" hidden>
     <section class="about-band" id="landing-about"><div class="landing-container">
       <span class="section-eyebrow landing-reveal">NICE TO MEET YOU</span>
-      <div class="about-title landing-reveal"><h2 class="section-heading">어려운 자료도,<br>하나씩 보면 괜찮아요.</h2><p class="section-desc">장손이는 복잡한 손해사정 자료를 찾아보고 정리하는 데 도움을 주는 작은 파트너예요.</p></div>
+      <div class="about-title landing-reveal"><h2 class="section-heading" tabindex="-1">어려운 자료도,<br>하나씩 보면 괜찮아요.</h2><p class="section-desc">장손이는 복잡한 손해사정 자료를 찾아보고 정리하는 데 도움을 주는 작은 파트너예요.</p></div>
       <div class="about-cards">
         <article class="about-card landing-reveal"><div class="card-icon" aria-hidden="true">▤</div><h3>보험 약관을 꼼꼼하게</h3><p>가입한 상품의 약관과 관련 담보를 차근차근 확인해요.</p></article>
         <article class="about-card landing-reveal"><div class="card-icon" aria-hidden="true">✳</div><h3>의학 자료를 한곳에서</h3><p>진단코드, 코딩지침, 의학 논문을 연결해 살펴봐요.</p></article>
@@ -825,7 +802,7 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
         </div><p class="guide-note"><span aria-hidden="true">✳</span> 실제 입력 및 조회 기능은 페이지 아래에서 이용할 수 있어요.</p>
       </div></div></section>
     <section class="journey-section" id="landing-journey"><div class="landing-container">
-      <div class="journey-heading"><span class="section-eyebrow">EXPLORE WITH JANGSONI</span><h2 class="section-heading">장손이와 함께<br>하나씩 둘러볼까요?</h2><p class="section-desc">아래로 내려가면 기능 카드가 차례대로 강조돼요. 필요한 기능을 바로 열어볼 수도 있어요.</p></div>
+      <div class="journey-heading"><span class="section-eyebrow">EXPLORE WITH JANGSONI</span><h2 class="section-heading">장손이와 함께<br>하나씩 둘러볼까요?</h2><p class="section-desc">사건을 입력하기 전에도 각 기능을 열어볼 수 있어요. 사건 정보를 입력했다면 그 내용으로 자료를 찾아요.</p></div>
       <div class="journey-grid">
         <aside class="journey-rail" aria-label="현재 안내 단계"><div class="journey-sticky">
           <div class="journey-mascot-wrap" aria-hidden="true"><img id="journey-static-frame" data-mascot-clone alt=""><img id="journey-walk-frame" alt="" hidden><div class="mascot-blinks"><span class="mascot-eyelid left"></span><span class="mascot-eyelid right"></span></div></div>
@@ -835,37 +812,37 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
         <div class="journey-steps"><article class="journey-step is-active" data-step="0" aria-current="step">
   <div class="journey-card"><div class="step-top"><span class="step-id">STEP 01 / 07</span><span class="step-symbol" aria-hidden="true">◷</span></div>
   <h3>사건 타임라인</h3><p>중요한 날짜와 진료 이력을 따라 사건의 흐름을 정리합니다.</p><div class="step-features"><span>날짜·이력</span><span>규칙 기반 검토</span></div>
-  <button class="step-open" type="button" data-go="timeline">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
+  <button class="step-open" type="button" data-preview-go="timeline">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
 </article>
 <article class="journey-step" data-step="1">
   <div class="journey-card"><div class="step-top"><span class="step-id">STEP 02 / 07</span><span class="step-symbol" aria-hidden="true">▤</span></div>
   <h3>보험 약관</h3><p>가입 당시 상품 약관과 담보별 지급사유·제한사유를 검토합니다.</p><div class="step-features"><span>상품별 약관</span><span>담보 확인</span></div>
-  <button class="step-open" type="button" data-go="yakgwan">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
+  <button class="step-open" type="button" data-preview-go="yakgwan">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
 </article>
 <article class="journey-step" data-step="2">
   <div class="journey-card"><div class="step-top"><span class="step-id">STEP 03 / 07</span><span class="step-symbol" aria-hidden="true">＋</span></div>
   <h3>KCD 진단코드</h3><p>질병분류 코드와 코딩지침, 관련 사례를 한곳에서 살펴봅니다.</p><div class="step-features"><span>KCD 검색</span><span>코딩지침</span></div>
-  <button class="step-open" type="button" data-go="koicd">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
+  <button class="step-open" type="button" data-preview-go="koicd">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
 </article>
 <article class="journey-step" data-step="3">
   <div class="journey-card"><div class="step-top"><span class="step-id">STEP 04 / 07</span><span class="step-symbol" aria-hidden="true">⚖</span></div>
   <h3>판례 검색</h3><p>관련 법률 판례에서 주요 쟁점과 판단 근거를 확인합니다.</p><div class="step-features"><span>쟁점별 판례</span><span>법적 근거</span></div>
-  <button class="step-open" type="button" data-go="law">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
+  <button class="step-open" type="button" data-preview-go="law">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
 </article>
 <article class="journey-step" data-step="4">
   <div class="journey-card"><div class="step-top"><span class="step-id">STEP 05 / 07</span><span class="step-symbol" aria-hidden="true">⌕</span></div>
   <h3>의학 논문</h3><p>PubMed에서 진단명과 의학적 근거를 연결해 찾아봅니다.</p><div class="step-features"><span>PubMed</span><span>의학 근거</span></div>
-  <button class="step-open" type="button" data-go="pubmed">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
+  <button class="step-open" type="button" data-preview-go="pubmed">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
 </article>
 <article class="journey-step" data-step="5">
   <div class="journey-card"><div class="step-top"><span class="step-id">STEP 06 / 07</span><span class="step-symbol" aria-hidden="true">≋</span></div>
   <h3>금감원 분쟁조정</h3><p>분쟁조정 결정례와 사례를 함께 검토합니다.</p><div class="step-features"><span>결정례</span><span>금감원 사례</span></div>
-  <button class="step-open" type="button" data-go="fss">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
+  <button class="step-open" type="button" data-preview-go="fss">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
 </article>
 <article class="journey-step" data-step="6">
   <div class="journey-card"><div class="step-top"><span class="step-id">STEP 07 / 07</span><span class="step-symbol" aria-hidden="true">▦</span></div>
   <h3>카드뉴스 제작</h3><p>검토한 내용을 이해하기 쉬운 카드뉴스 형태로 정리합니다.</p><div class="step-features"><span>자료 작성</span><span>결과물 편집</span></div>
-  <button class="step-open" type="button" data-go="cardnews">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
+  <button class="step-open" type="button" data-preview-go="cardnews">기능 열어보기 <span aria-hidden="true">↗</span></button></div>
 </article></div>
       </div>
     </div></section>
@@ -877,8 +854,9 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
         <div class="demo-line"><span class="label">STEP 03</span><span class="value">진단코드 및 의학적 근거 검토</span></div>
         <div class="demo-line"><span class="label">STEP 04</span><span class="value">판례·분쟁조정 사례 확인 및 카드뉴스 정리</span></div>
       </div></div></section>
-    <section class="workbench-section" id="analysis-workbench"><div class="landing-container">
-      <div class="workbench-heading"><span class="section-eyebrow">LET'S BEGIN</span><h2 class="section-heading">그럼, 시작해 볼까요?</h2><p class="section-desc">사건 정보를 입력해 주세요.<br>장손이가 관련 자료를 찾아볼 수 있도록 도와드릴게요.</p></div>
+    </div>
+    <section class="workbench-section" id="analysis-workbench" aria-labelledby="case-input-heading"><div class="landing-container">
+      <div class="workbench-heading"><span class="section-eyebrow">LET'S BEGIN</span><h2 class="section-heading" id="case-input-heading" tabindex="-1">사건 정보 입력</h2><p class="section-desc">사건 정보를 입력해 주세요.<br>장손이가 관련 자료를 찾아볼 수 있도록 도와드릴게요.</p></div>
       <div class="workbench-card">
             <!-- 사건 정보 입력: 시작하기를 누르면 이 값으로 각 메뉴를 자동 검색 -->
     <form id="case-form" class="case-form" autocomplete="off">
@@ -918,7 +896,10 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
     <div class="wrap">
       <div class="law-header">
         <h1>무엇을 찾아볼까요?</h1>
-        <button class="back" type="button" data-go="intro">← 처음 화면으로</button>
+        <div class="menu-navigation">
+          <button class="back" type="button" data-go="intro">← 처음 화면으로</button>
+          <button class="back" type="button" data-go="intro" data-scroll-target="analysis-workbench">입력 내용 수정</button>
+        </div>
       </div>
       <div id="case-summary" class="note case-summary"></div>
       <div class="menu-grid">
@@ -1607,17 +1588,23 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
       showKoicd(document.getElementById("koicd-query").value);
     });
 
-    // 시작하기 → 입력값으로 자동검색 후 메뉴 화면 (runAutoSearch는 스크립트 끝에 있음)
-    document.getElementById("start").addEventListener("click", () => {
+    let analyzedCaseKey = "";
+    function prepareCaseAnalysis() {
       // 상품 약관을 불러온 뒤에는 약관에 있는 담보만 받음
       if (!introValidateCover()) {
         const input = document.getElementById("in-cover");
         input.focus();
         input.scrollIntoView({ behavior: "smooth", block: "center" });
-        return;
+        return false;
       }
       runAutoSearch();
-      showScreen("menu");
+      analyzedCaseKey = JSON.stringify(readCaseInput());
+      return true;
+    }
+
+    // 시작하기 → 입력값으로 자동검색 후 메뉴 화면
+    document.getElementById("start").addEventListener("click", () => {
+      if (prepareCaseAnalysis()) showScreen("menu");
     });
 
     // 메뉴 버튼과 뒤로 가기 버튼 (data-go에 적힌 화면으로 이동)
@@ -3610,7 +3597,7 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 
 
 <script id="landing-script">
-/* JANGSONI 2.0: presentation controller; original application logic unchanged. */
+/* JANGSONI 2.0 presentation and entry points */
 (()=>{
  'use strict';
  const root=document.getElementById('intro');
@@ -3621,10 +3608,26 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
  root.querySelectorAll('img[data-mascot-clone]').forEach(img=>{ img.src=original.src; });
  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
  const preferredBehavior=()=>reduce.matches?'auto':'smooth';
- root.querySelectorAll('[data-scroll-target]').forEach(btn=>{
+ const tour=document.getElementById('landing-tour');
+ const tourButton=document.getElementById('show-tour');
+ document.querySelectorAll('[data-scroll-target]').forEach(btn=>{
    btn.addEventListener('click',()=>{
      const dest=document.getElementById(btn.dataset.scrollTarget);
-     if(dest) dest.scrollIntoView({behavior:preferredBehavior(),block:'start'});
+     if(tour.contains(dest)){
+       tour.hidden=false;
+       tourButton.setAttribute('aria-expanded','true');
+     }
+     dest.querySelector('[tabindex="-1"]').focus({preventScroll:true});
+     dest.scrollIntoView({behavior:dest.id==='analysis-workbench'?'instant':preferredBehavior(),block:'start'});
+   });
+ });
+ root.querySelectorAll('[data-preview-go]').forEach(btn=>{
+   btn.addEventListener('click',()=>{
+     const caseInput=readCaseInput();
+     const needsAnalysis=Object.values(caseInput).some(Boolean) && JSON.stringify(caseInput)!==analyzedCaseKey;
+     if(needsAnalysis && !prepareCaseAnalysis()) return;
+     // 메뉴와 같은 진입 경로로 판례 검색 조건과 타임라인 입력값을 적용한다.
+     document.querySelector('#menu .menu-item[data-go="'+btn.dataset.previewGo+'"]').click();
    });
  });
  const stage=root.querySelector('.hero-art .mascot-stage');
@@ -3667,7 +3670,7 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
  let active=-1, raf=0, prevScroll=window.scrollY, stopTimer=0;
  function update(){
    raf=0;
-   if(root.hidden||!journey||!steps.length) return;
+   if(root.hidden||tour.hidden||!journey||!steps.length) return;
    const viewport=window.innerHeight;
    const jRect=journey.getBoundingClientRect();
    if(jRect.bottom < -viewport || jRect.top > viewport*2) return;
