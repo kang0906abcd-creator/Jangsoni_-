@@ -601,6 +601,7 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
   mask-image:linear-gradient(to right,transparent,#000 5% 95%,transparent),linear-gradient(to bottom,transparent,#000 6% 94%,transparent);
   mask-composite:intersect;
 }
+#intro .hero-art .has-mascot-atlas { align-self:center; }
 #intro .has-mascot-atlas .mascot-blinks,#intro .has-mascot-atlas .journey-shadow { display:none; }
 #intro img.mascots-img { margin:0; filter:none; max-width:100%; }
 #intro .mascot-blinks { position:absolute; inset:0; pointer-events:none; }
@@ -3603,6 +3604,15 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 
 
 
+<script id="mascot-preview-config">
+window.JANGSONI_ATLAS = {
+  src: './assets/mascot/장손이 애니메이션 에셋 가이드.png',
+  referenceBackground: true,
+  hero: [208, 41, 317, 276],
+  stand: [535, 33, 218, 278],
+  walk: [240, 399, 558, 718, 878, 1038, 1198, 1358].map(x => [x, 427, 156, 208])
+};
+</script>
 <script id="landing-script">
 /* JANGSONI 2.0 presentation and entry points */
 (()=>{
