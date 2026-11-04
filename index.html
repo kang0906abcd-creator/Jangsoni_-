@@ -595,6 +595,13 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 #intro .mascot-stage { width:min(100%,480px); position:relative; margin-inline:auto; cursor:default; transform-origin:50% 86%; transition:transform 800ms cubic-bezier(.2,.8,.2,1); }
 #intro .mascot-stage.is-noticing { transform:rotate(-1.6deg) translateY(-4px); }
 #intro .mascot-stage img { display:block; width:100%; height:auto; object-fit:contain; }
+#intro .mascot-atlas { display:block; width:100%; height:auto; overflow:hidden; }
+#intro .reference-atlas {
+  mix-blend-mode:multiply;
+  mask-image:linear-gradient(to right,transparent,#000 5% 95%,transparent),linear-gradient(to bottom,transparent,#000 6% 94%,transparent);
+  mask-composite:intersect;
+}
+#intro .has-mascot-atlas .mascot-blinks,#intro .has-mascot-atlas .journey-shadow { display:none; }
 #intro img.mascots-img { margin:0; filter:none; max-width:100%; }
 #intro .mascot-blinks { position:absolute; inset:0; pointer-events:none; }
 #intro .mascot-eyelid { position:absolute; top:18%; width:6.5%; height:5.5%; border-radius:50% 50% 42% 42%; background:#b4d8e6; transform:scaleY(.001); transform-origin:50% 5%; box-shadow:inset 0 -2px 0 rgba(74,139,160,.19); animation:js-mascot-blink 6.15s infinite; }
@@ -3658,14 +3665,58 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
  const walkImg=root.querySelector('#journey-walk-frame');
  const staticImg=root.querySelector('#journey-static-frame');
  const phrases=['여기부터 살펴볼게요.','약관도 확인해 봐요.','코드도 찾아볼까요?','판례는 이쪽이에요.','논문도 같이 봐요.','음… 이것도 중요해요.','이제 정리해 볼까요?'];
+ const atlas=window.JANGSONI_ATLAS;
  const frames=Array.isArray(window.JANGSONI_WALK_FRAMES)?window.JANGSONI_WALK_FRAMES.filter(x=>typeof x==='string'&&x):[];
  const stand=typeof window.JANGSONI_STAND_FRAME==='string'?window.JANGSONI_STAND_FRAME.trim():'';
- // Optional real transparent poses. Never fake walking by sliding the original seated PNG.
+ const frameCount=atlas?atlas.walk.length:frames.length;
+ // Keep the seated image as a fallback until the walking poses have loaded.
  let spritesReady=false;
- if(frames.length>=4&&walkImg&&staticImg&&avatar){
+ let journeyAtlas=null;
+ function mountAtlas(parent, source, crop){
+   const namespace='http://www.w3.org/2000/svg';
+   const svg=document.createElementNS(namespace,'svg');
+   svg.setAttribute('aria-hidden','true');
+   svg.setAttribute('class',atlas.referenceBackground?'mascot-atlas reference-atlas':'mascot-atlas');
+   svg.setAttribute('width',crop[2]);
+   svg.setAttribute('height',crop[3]);
+   svg.setAttribute('viewBox',crop.join(' '));
+   svg.setAttribute('preserveAspectRatio','xMidYMax meet');
+   const image=document.createElementNS(namespace,'image');
+   image.setAttribute('href',source.src);
+   image.setAttribute('width',source.naturalWidth);
+   image.setAttribute('height',source.naturalHeight);
+   svg.append(image);
+   parent.append(svg);
+   return svg;
+ }
+ if(atlas){
+   const source=new Image();
+   source.onload=()=>{
+     if(atlas.hero){
+       mountAtlas(stage,source,atlas.hero);
+       original.hidden=true;
+       stage.classList.add('has-mascot-atlas');
+     }
+     journeyAtlas=mountAtlas(avatar,source,atlas.stand);
+     staticImg.hidden=true;
+     avatar.closest('.journey-sticky').classList.add('has-mascot-atlas');
+     spritesReady=true;
+   };
+   source.src=atlas.src;
+ }else if(frames.length>=4&&walkImg&&staticImg&&avatar){
    const all=[...frames,...(stand?[stand]:[])];
    Promise.all(all.map(src=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(src);img.onerror=reject;img.src=src;})))
      .then(()=>{staticImg.src=stand||frames[0];spritesReady=true;}).catch(()=>{});
+ }
+ function showJourneyPose(index){
+   if(journeyAtlas){
+     const crop=index<0?atlas.stand:atlas.walk[index];
+     journeyAtlas.setAttribute('viewBox',crop.join(' '));
+   }else{
+     if(index>=0) walkImg.src=frames[index];
+     walkImg.hidden=index<0;
+     staticImg.hidden=index>=0;
+   }
  }
  let active=-1, raf=0, prevScroll=window.scrollY, stopTimer=0;
  function update(){
@@ -3695,13 +3746,13 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
      const total=Math.max(1,jRect.height-viewport);
      const pos=Math.max(0,Math.min(1,-jRect.top/total));
      // Scrub pose with scroll distance; motion never continues once scrolling stops.
-     const idx=Math.floor(pos*frames.length*15)%frames.length;
+     const idx=Math.floor(pos*frameCount*15)%frameCount;
      if(traveling){
-       walkImg.src=frames[idx]; walkImg.hidden=false; staticImg.hidden=true;
+       showJourneyPose(idx);
        avatar.style.transform='translateY('+Math.round(5*Math.sin(pos*7*Math.PI))+'px)';
      }
      clearTimeout(stopTimer);
-     stopTimer=setTimeout(()=>{walkImg.hidden=true;staticImg.hidden=false;avatar.style.transform='';},170);
+     stopTimer=setTimeout(()=>{showJourneyPose(-1);avatar.style.transform='';},170);
    }
  }
  const requestUpdate=()=>{if(!raf)raf=requestAnimationFrame(update);};
