@@ -1,5 +1,3 @@
 {
-  "hero": "assets/mascot/runtime/hero.webp",
-  "blink": "assets/mascot/runtime/closed-eyes.webp",
-  "companionBlink": "assets/mascot/runtime/companion-closed-eyes.webp"
+  "pack": "assets/mascot/packs/guide/mascot.json"
 }

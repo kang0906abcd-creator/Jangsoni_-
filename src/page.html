@@ -28,19 +28,7 @@
       <div class="hero-art landing-reveal"><span class="hero-caption">MEET JANGSONI ✳</span>
         <div class="mascot-stage" role="img" aria-label="안경을 쓰고 청구 서류와 돋보기를 든 하늘색 수달 캐릭터 장손이">
           <img class="mascots-img" src="@@HERO_IMAGE@@" alt="장손이: 안경을 쓰고 청구 서류와 돋보기를 든 하늘색 수달 캐릭터">
-          <svg class="mascot-closed-frame" aria-hidden="true" viewBox="0 0 1254 1254">
-            <defs>
-              <radialGradient id="mascot-blink-edge">
-                <stop offset="84%" stop-color="white"/>
-                <stop offset="100%" stop-color="white" stop-opacity="0"/>
-              </radialGradient>
-              <mask id="mascot-blink-eyes" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254">
-                <ellipse cx="483" cy="443" rx="88" ry="76" fill="url(#mascot-blink-edge)"/>
-                <ellipse cx="784" cy="423" rx="88" ry="76" fill="url(#mascot-blink-edge)"/>
-              </mask>
-            </defs>
-            <image href="@@BLINK_IMAGE@@" width="1254" height="1254" mask="url(#mascot-blink-eyes)"/>
-          </svg>
+          @@HERO_BLINK_FRAME@@
         </div>
         <div class="hero-aside" aria-hidden="true"><span class="symbol">✦</span><span><strong>음… 같이 찾아볼까요?</strong><small>조금 느리지만, 꼼꼼하게!</small></span></div>
       </div>
@@ -62,7 +50,7 @@
         <div class="guide-field"><span class="num">05</span> 청구 담보</div><div class="guide-field"><span class="num">06</span> 주요 쟁점</div>
         </div><p class="guide-note"><span aria-hidden="true">✳</span> 실제 입력 및 조회 기능은 페이지 아래에서 이용할 수 있어요.</p>
       </div></div></section>
-    <section class="journey-section" id="landing-journey"><div class="landing-container">
+    <section class="journey-section journey-cards-left" id="landing-journey"><div class="landing-container">
       <div class="journey-heading landing-reveal"><span class="section-eyebrow">EXPLORE WITH JANGSONI</span><h2 class="section-heading">장손이와 함께<br>하나씩 둘러볼까요?</h2><p class="section-desc">사건을 입력하기 전에도 각 기능을 열어볼 수 있어요. 사건 정보를 입력했다면 그 내용으로 자료를 찾아요.</p></div>
       <div class="journey-grid">
         <aside class="journey-rail" aria-label="현재 안내 단계"><div class="journey-sticky">
@@ -439,21 +427,9 @@
     </div>
   </section>
 
-  <button id="case-companion" type="button" aria-label="장손이 도움말 열기" aria-haspopup="dialog" aria-controls="companion-chat" aria-expanded="false" data-side="left" hidden>
+  <button id="case-companion" type="button" aria-label="장손이 도움말 열기" aria-haspopup="dialog" aria-controls="companion-chat" aria-expanded="false" hidden>
     <span class="companion-art" aria-hidden="true">
-      <svg class="companion-closed-frame" viewBox="0 0 627 627" preserveAspectRatio="xMidYMax meet">
-        <defs>
-          <radialGradient id="companion-blink-edge">
-            <stop offset=".84" stop-color="#fff"/>
-            <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-          </radialGradient>
-          <mask id="companion-blink-eyes">
-            <ellipse cx="314" cy="201" rx="33" ry="29" fill="url(#companion-blink-edge)"/>
-            <ellipse cx="429" cy="188" rx="33" ry="29" fill="url(#companion-blink-edge)"/>
-          </mask>
-        </defs>
-        <image href="@@COMPANION_BLINK_IMAGE@@" width="627" height="627" preserveAspectRatio="none" mask="url(#companion-blink-eyes)"/>
-      </svg>
+      @@COMPANION_BLINK_FRAME@@
     </span>
     <span class="companion-hints" aria-hidden="true">
       <span class="companion-hint companion-hint-help">
@@ -474,7 +450,6 @@
       </span>
     </span>
   </button>
-
   <dialog id="companion-chat" class="companion-chat" aria-labelledby="companion-chat-title" hidden>
     <header class="companion-chat-header">
       <h2 id="companion-chat-title">장손이 도움말</h2>
