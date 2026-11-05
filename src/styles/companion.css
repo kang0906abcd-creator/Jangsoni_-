@@ -35,5 +35,5 @@
 }
 @media (max-width: 720px) {
   #case-companion { --companion-inset: 10px; width: 62px; height: 62px; }
-  html:has(:is(input, select, textarea, [contenteditable]):focus) #case-companion { visibility: hidden; }
+  html:has(:is(input, select, textarea, [contenteditable]):not(#companion-chat *):focus) #case-companion { visibility: hidden; }
 }
