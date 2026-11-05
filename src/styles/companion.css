@@ -1,6 +1,7 @@
 #case-companion {
+  --companion-inset: 18px;
   position: fixed;
-  right: max(18px, env(safe-area-inset-right));
+  right: max(var(--companion-inset), env(safe-area-inset-right));
   bottom: max(18px, env(safe-area-inset-bottom));
   z-index: 15;
   width: 88px;
@@ -13,6 +14,10 @@
   cursor: grab;
   touch-action: none;
   user-select: none;
+}
+#case-companion[data-side="left"] {
+  right: auto;
+  left: max(var(--companion-inset), env(safe-area-inset-left));
 }
 #case-companion[data-dragging] { cursor: grabbing; }
 #case-companion[data-arriving] { visibility: hidden; }
@@ -32,6 +37,6 @@
   94% { transform: translateY(-1px); }
 }
 @media (max-width: 720px) {
-  #case-companion { width: 62px; height: 62px; right: max(10px, env(safe-area-inset-right)); }
+  #case-companion { --companion-inset: 10px; width: 62px; height: 62px; }
   html:has(:is(input, select, textarea, [contenteditable]):focus) #case-companion { visibility: hidden; }
 }
