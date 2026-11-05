@@ -1,0 +1,72 @@
+/* Comparison theme inspired by the existing company card-news artwork. */
+body { background: #fdebdd; }
+#intro,
+:is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#timeline,#law,#soon).work-screen {
+  background: #fdebdd;
+}
+#intro :is(.about-band,.form-guide,.journey-section,.demo-section,.workbench-section) { background: #fdebdd; }
+#intro :is(.hero-copy,.workbench-card,.journey-card,.demo-paper,.guide-paper),
+.work-screen .menu-grid {
+  position: relative;
+  border: 6px solid #ff7a29;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 5px 0 #efb68e;
+}
+#intro :is(.hero-copy,.workbench-card,.journey-card)::before,
+.work-screen .menu-grid::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  z-index: 2;
+  width: 76px;
+  height: 36px;
+  transform: translateX(-50%);
+  border-bottom: 3px solid #eba927;
+  border-radius: 12px 12px 6px 6px;
+  background: #ffcb49 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='26' viewBox='0 0 32 26'%3E%3Cpath d='M10 5V21M22 5V21M10 13H22' stroke='%23ECA000' stroke-width='3.5' fill='none'/%3E%3C/svg%3E") center no-repeat;
+}
+#intro .hero-copy { padding: 40px 28px 30px; margin-top: 20px; }
+#intro .hero-heading { font-size: clamp(36px, 3.8vw, 55px); line-height: 1.2; margin-top: 20px; margin-bottom: 20px; }
+#intro .hero-lead { font-size: 16px; line-height: 1.85; }
+#intro .hero-actions { margin-top: 26px; }
+#intro .hero-aside { border: 2px solid #ffb781; background: #fff8ef; }
+#intro .about-card { border: 2px solid #ffc79f; background: #fff; }
+#intro .card-icon { background: #fff0e2; color: #ff7a29; }
+#intro .guide-paper { padding-top: 28px; }
+#intro .journey-card { padding-top: 42px; }
+#intro .journey-step.is-active .journey-card { border-color: #ff7a29; box-shadow: 0 7px 0 #efb68e; }
+#intro .step-id { color: #b66b32; }
+#intro :is(.step-symbol,.step-features span) { background: #fff1e5; color: #bc5b22; }
+#intro .step-open { color: #d8641c; border-bottom-color: #ffb27a; }
+#intro .workbench-card { padding-top: 36px; }
+#intro .workbench-bottom { margin-top: 22px; padding: 16px; border: 0; border-radius: 12px; background: #333; }
+#intro .workbench-bottom p { color: #fff; }
+#intro .landing-footer { margin-bottom: 20px; padding: 22px 24px; border: 0; border-radius: 14px; background: #333; color: #fff; }
+#intro .landing-footer b { color: #fff; }
+.work-screen .menu-grid { margin-top: 36px; padding: 24px; }
+.work-screen .menu-item { border-color: #ffd0af; box-shadow: none; }
+.work-screen .menu-item:hover { border-color: #ff7a29; background: #fff5eb; }
+.work-screen .menu-icon { background: #fff0e0; }
+.work-screen :is(.tl-box,.controls,.koicd-search,.yak-form) { border-width: 3px; border-color: #ff9b57; background: #fff; }
+.work-screen .tl-box { padding-top: 22px; }
+.work-screen .note { border-color: #ffccaa; border-left-color: #ff7a29; background: #fff8ef; }
+.work-screen :is(.tabs,.filters,.kcd-tabs) { border-color: #f4c5a5; background: #fff3e7; }
+.work-screen .cn-toolbar { padding: 14px; border-radius: 12px; background: #333; color: #fff; }
+.work-screen .cn-status { color: #fff; }
+.work-screen .search-intro { border: 2px dashed #efa976; background: #fff8ef; }
+.work-screen .back { border-width: 2px; border-color: #ffb27b; }
+.companion-chat { border: 3px solid #ff7a29; }
+.companion-chat-header { background: #ffeddf; color: #333; }
+@media (max-width: 720px) {
+  #intro .hero-copy { padding: 34px 20px 24px; border-width: 5px; }
+  #intro .hero-heading { font-size: clamp(32px, 8.5vw, 43px); }
+  #intro :is(.workbench-card,.journey-card,.demo-paper,.guide-paper) { border-width: 5px; }
+  #intro .workbench-bottom { flex-direction: column; align-items: stretch; }
+  #intro .workbench-bottom button { width: 100%; }
+  .work-screen .menu-grid { padding: 20px 12px 14px; border-width: 5px; }
+  .work-screen .menu-item { padding: 16px 12px; }
+  body:has(.work-screen:not([hidden])) .companion-dock { border-color: #ff7a29; background: #333; color: #fff; }
+  .companion-dock small { color: #ddd; }
+}
