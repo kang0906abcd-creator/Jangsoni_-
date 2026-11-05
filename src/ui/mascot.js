@@ -1,3 +1,5 @@
+import { mountAtlas } from './sprite.js';
+
 export function createMascot(root, atlas) {
  const original=root.querySelector('img.mascots-img');
  const stage=root.querySelector('.hero-art .mascot-stage');
@@ -11,27 +13,10 @@ export function createMascot(root, atlas) {
  // Keep the seated image as a fallback until the walking poses have loaded.
  let spritesReady=false;
  let journeyAtlas=null;
- function mountAtlas(parent, source, crop){
-   const namespace='http://www.w3.org/2000/svg';
-   const svg=document.createElementNS(namespace,'svg');
-   svg.setAttribute('aria-hidden','true');
-   svg.setAttribute('class','mascot-atlas');
-   svg.setAttribute('width',crop[2]);
-   svg.setAttribute('height',crop[3]);
-   svg.setAttribute('viewBox',crop.join(' '));
-   svg.setAttribute('preserveAspectRatio','xMidYMax meet');
-   const image=document.createElementNS(namespace,'image');
-   image.setAttribute('href',source.src);
-   image.setAttribute('width',source.naturalWidth);
-   image.setAttribute('height',source.naturalHeight);
-   svg.append(image);
-   parent.append(svg);
-   return svg;
- }
  if(atlas){
    const source=new Image();
    source.onload=()=>{
-     journeyAtlas=mountAtlas(avatar,source,atlas.stand);
+     journeyAtlas=mountAtlas(avatar,source,atlas.stand,'mascot-atlas');
      staticImg.hidden=true;
      avatar.closest('.journey-sticky').classList.add('has-mascot-atlas');
      spritesReady=true;
