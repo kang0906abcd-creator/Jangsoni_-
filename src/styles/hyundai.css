@@ -1,5 +1,6 @@
 /* Comparison theme inspired by the existing company card-news artwork. */
 body { background: #fdebdd; }
+#intro { --journey-stage-color:#fdebdd; }
 #intro,
 :is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#timeline,#law,#soon).work-screen {
   background: #fdebdd;
