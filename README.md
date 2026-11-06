@@ -10,6 +10,13 @@
 
 `index.html`을 Chrome, Edge 등 최신 브라우저에서 열면 됩니다. 외부 UI 라이브러리 없이 HTML, CSS, JavaScript로 동작하며, 기존 파일의 데이터·화면·조회 로직은 그대로 남겨두었습니다. 상품 약관 등 원래부터 인터넷을 필요로 하는 기능은 인터넷 연결과 해당 외부 서비스에 좌우됩니다.
 
+## 웹 미리보기
+
+- [현대해상 스타일 사이트](https://wkdal1433.github.io/jangsoni/)
+- [휴대전화 접속 QR코드](docs/qr/jangsoni-hyundai.png)
+
+`.github/workflows/pages.yml`은 `v2-hyundai-style`의 배포 HTML·QR·워크플로 변경을 GitHub Pages에 반영합니다. 소스를 수정한 뒤에는 `npm run build`와 검증을 완료하고 생성된 `index.html`을 함께 커밋하세요. 배포 파일은 `index.html`과 `qr.png`이며, 기존 main 브랜치를 변경하지 않습니다.
+
 ## 2. 이번 프로토타입에서 완료한 범위
 
 - 밝은 흰색·하늘색 기반의 Welcome, 역할 소개, 입력 방법, 7개 기능 안내, 예시 결과, 실제 입력 화면
