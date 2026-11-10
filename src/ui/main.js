@@ -6,6 +6,7 @@ import { createNavigation } from './navigation.js';
 import { setupCompanion } from './companion.js';
 import { setupSearchExamples } from './search-examples.js';
 import { setupIcons } from './icons.js';
+import { setupExitSurvey } from './exit-survey.js';
 
 setupIcons();
 
@@ -14,11 +15,15 @@ const tour = document.getElementById('landing-tour');
 const tourButton = document.getElementById('show-tour');
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 const companion = setupCompanion(root, tour, reduce);
+let currentScreen = 'intro';
+const survey = setupExitSurvey({ reduce, currentScreen: () => currentScreen });
 
 // The bundled entry point connects the new UI modules to the existing business script.
 export const navigate = createNavigation({
   showScreen, tour, tourButton, reduce,
+  onExitAttempt: leave => survey.request('back', leave),
   onViewChange(screen) {
+    currentScreen = screen;
     companion.update();
     companion.visit(screen);
   },

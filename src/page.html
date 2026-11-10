@@ -13,6 +13,7 @@
 <style id="companion-styles">
 @@COMPANION_CSS@@
 @@COMPANION_CHAT_CSS@@
+@@EXIT_SURVEY_CSS@@
 </style>
 <style id="workspace-styles">
 @@WORKSPACE_CSS@@
@@ -534,6 +535,41 @@
           <button type="submit" class="companion-chat-primary">보내기</button>
         </div>
       </form>
+    </div>
+  </dialog>
+
+  <dialog id="exit-survey" class="exit-survey" aria-labelledby="exit-survey-title" aria-describedby="exit-survey-bubble" hidden>
+    <div class="exit-survey-hero">
+      <p id="exit-survey-bubble" class="exit-survey-bubble" aria-live="polite">벌써 가시나요? 30초만 시간을 내서 장손이를 도와주세요!</p>
+      <span class="exit-survey-art" aria-hidden="true"></span>
+    </div>
+    <div class="exit-survey-ask">
+      <h2 id="exit-survey-title">장손이 이용은 어떠셨나요?</h2>
+      <form novalidate>
+        <div class="exit-survey-stars" role="radiogroup" aria-label="이용 경험 별점 (5점 만점)">
+          <button type="button" class="exit-survey-star" role="radio" aria-checked="false" aria-label="별 1개 · 많이 아쉬웠어요"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg></button>
+          <button type="button" class="exit-survey-star" role="radio" aria-checked="false" aria-label="별 2개 · 조금 아쉬웠어요" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg></button>
+          <button type="button" class="exit-survey-star" role="radio" aria-checked="false" aria-label="별 3개 · 보통이에요" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg></button>
+          <button type="button" class="exit-survey-star" role="radio" aria-checked="false" aria-label="별 4개 · 좋았어요" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg></button>
+          <button type="button" class="exit-survey-star" role="radio" aria-checked="false" aria-label="별 5개 · 최고예요" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg></button>
+        </div>
+        <p class="exit-survey-rating-label" aria-hidden="true">&nbsp;</p>
+        <label class="exit-survey-comment">
+          <span>장손이가 더 나아지려면? <small>(선택)</small></span>
+          <textarea name="comment" rows="3" maxlength="1000" placeholder="불편했던 점, 있었으면 하는 기능 등 무엇이든 좋아요"></textarea>
+          <small class="exit-survey-count" aria-hidden="true">0 / 1000</small>
+        </label>
+        <input type="text" name="website" class="exit-survey-trap" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="exit-survey-actions">
+          <button type="button" class="exit-survey-skip" data-survey-skip>다음에 할게요</button>
+          <button type="submit" class="exit-survey-submit" disabled>의견 보내기</button>
+        </div>
+      </form>
+    </div>
+    <div class="exit-survey-thanks" hidden>
+      <h2>고마워요!</h2>
+      <p>남겨 주신 의견은 장손이를 고칠 때 꼭 참고할게요.</p>
+      <button type="button" class="exit-survey-submit" data-survey-done>닫기</button>
     </div>
   </dialog>
 

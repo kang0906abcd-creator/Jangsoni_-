@@ -1,11 +1,27 @@
-export function createNavigation({ showScreen, tour, tourButton, reduce, onViewChange }) {
+export function createNavigation({ showScreen, tour, tourButton, reduce, onViewChange, onExitAttempt }) {
   let nextVisit = 0;
   const newVisit = () => `${performance.timeOrigin}:${nextVisit++}`;
   let current = { visit: newVisit(), screen: 'intro' };
   const views = new Map();
 
+  let leaving = false;
+
   history.scrollRestoration = 'manual';
-  history.replaceState({ jangsoni: current }, '');
+  // 첫 화면 뒤에 '나가기' 표식을 하나 깔아 두어, 사이트를 떠나는 뒤로 가기를 알아챈다.
+  // 새로고침할 때는 표식이 이미 뒤에 있으므로 다시 만들지 않는다.
+  if (history.state?.jangsoni) {
+    history.replaceState({ jangsoni: current }, '');
+  } else {
+    history.replaceState({ jangsoniExit: true }, '');
+    history.pushState({ jangsoni: current }, '');
+  }
+
+  function leave() {
+    leaving = true;
+    history.go(-2);
+    // 이전 사이트가 없으면(새 탭) 그대로 머문다.
+    setTimeout(() => { leaving = false; }, 1000);
+  }
 
   function rememberView() {
     views.set(current.visit, { scrollY: window.scrollY, tourOpen: !tour.hidden });
@@ -25,6 +41,12 @@ export function createNavigation({ showScreen, tour, tourButton, reduce, onViewC
   }
 
   window.addEventListener('popstate', event => {
+    if (event.state?.jangsoniExit) {
+      if (leaving) return;
+      history.pushState({ jangsoni: current }, '');
+      if (!onExitAttempt?.(leave)) leave();
+      return;
+    }
     const entry = event.state?.jangsoni;
     if (!entry) return;
     rememberView();

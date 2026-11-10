@@ -1,0 +1,5 @@
+{
+  "endpoint": "",
+  "askAgainAfterDays": 30,
+  "minEngagementSeconds": 8
+}

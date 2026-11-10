@@ -45,6 +45,10 @@ npm run build:check
 
 `npm run build`로 생성한 `index.html`을 소스 변경과 함께 커밋하세요. `npm run build:check`는 생성 결과와 커밋 대상 파일이 일치하는지 검사합니다.
 
+## 나가기 설문
+
+사용자가 떠나려 할 때 장손이가 별점과 개선 제안을 부탁합니다. 동작 방식과 응답을 받을 구글 시트 연결 방법은 [나가기 설문 안내](docs/exit-survey.md)에 있습니다. 화면은 `src/ui/exit-survey.js`, `src/styles/exit-survey.css`, 응답 주소는 `src/survey-config.json`에서 관리합니다.
+
 ## 회귀 검증
 
 이번 복구의 원인·비교 범위·실제 외부 연결 결과는 [전체 회귀 검증 보고서](docs/2026-11-05-full-regression.md)에 기록했습니다.
