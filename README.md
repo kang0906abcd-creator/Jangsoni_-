@@ -13,7 +13,7 @@
 ## 웹 미리보기
 
 - [장손이 사이트](https://kang0906abcd-creator.github.io/Jangsoni_-/)
-- [휴대전화 접속 QR 코드](docs/qr/jangsoni-pages.png)
+- 휴대전화 접속 QR 코드: [안내 카드(공유·인쇄용)](docs/qr/jangsoni-qr-card.png) · [QR만](docs/qr/jangsoni-qr.png) · [QR 벡터(SVG, 큰 인쇄용)](docs/qr/jangsoni-qr.svg)
 
 `main`에 변경을 올리면 `.github/workflows/pages.yml`이 Node.js 24에서 `npm ci`와 `npm run build`를 실행하고, 생성한 `index.html`을 GitHub Pages에 게시합니다. QR 코드는 위 링크에서 내려받을 수 있습니다.
 
