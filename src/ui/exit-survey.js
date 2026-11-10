@@ -22,6 +22,13 @@ const ratingLines = [
   '와, 최고라니 신나요! 바라는 점이 있다면 적어 주세요.',
 ];
 
+const openingLines = {
+  'task-done': '방금 기능, 도움이 됐나요? 별점 하나만 남겨 주시면 힘이 나요!',
+  feedback: '어떤 의견이든 환영해요! 편하게 남겨 주세요.',
+};
+const taskDoneDelay = 3500;
+const taskNames = { 'cardnews-save': '카드뉴스 저장', 'yakgwan-analysis': '약관 분석', 'pubmed-copy': '논문 인용 복사' };
+
 const store = {
   get(area, key) { try { return window[area].getItem(key); } catch { return null; } },
   set(area, key, value) { try { window[area].setItem(key, value); } catch {} },
@@ -131,9 +138,10 @@ export function setupExitSurvey({ reduce, currentScreen }) {
     bubble.textContent = '벌써 가시나요? 30초만 시간을 내서 장손이를 도와주세요!';
   }
 
-  function open(reason, then) {
+  function open(reason, then, label) {
     reset();
-    trigger = reason;
+    if (openingLines[reason]) bubble.textContent = openingLines[reason];
+    trigger = label || reason;
     afterClose = then || null;
     store.set('sessionStorage', seenKey, '1');
     panel.hidden = false;
@@ -158,9 +166,9 @@ export function setupExitSurvey({ reduce, currentScreen }) {
     return Date.now() - loadedAt >= config.minEngagementSeconds * 1000;
   }
 
-  function request(reason, then) {
+  function request(reason, then, label) {
     if (!canAsk()) return false;
-    open(reason, then);
+    open(reason, then, label);
     return true;
   }
 
@@ -228,6 +236,48 @@ export function setupExitSurvey({ reduce, currentScreen }) {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') hiddenAt = Date.now();
     else if (hiddenAt && Date.now() - hiddenAt > 1500 && matchMedia('(pointer: coarse)').matches) request('returned');
+  });
+
+  // 기능을 끝까지 쓴 직후(카드뉴스 저장, 약관 분석 완료, 논문 인용 복사): 결과를 볼 시간을 두고 묻는다.
+  let taskTimer = 0;
+  document.addEventListener('jangsoni:task-done', event => {
+    clearTimeout(taskTimer);
+    taskTimer = setTimeout(() => {
+      const busy = document.activeElement?.matches('input, select, textarea, [contenteditable]')
+        || document.querySelector('dialog:modal');
+      if (!busy && document.visibilityState === 'visible') request('task-done', null, `기능 사용 후 (${taskNames[event.detail] || event.detail})`);
+    }, taskDoneDelay);
+  });
+
+  // 업무 코드(analysis.js)는 건드리지 않고, 화면에 나타나는 완료 표시를 보고 알아챈다.
+  const taskDone = kind => document.dispatchEvent(new CustomEvent('jangsoni:task-done', { detail: kind }));
+  const watch = (node, options, check) => node && new MutationObserver(check).observe(node, options);
+  const cardStatus = document.getElementById('cn-status');
+  watch(cardStatus, { childList: true, characterData: true, subtree: true }, () => {
+    if (cardStatus.textContent.includes('저장했어요')) taskDone('cardnews-save');
+  });
+  const yakLive = document.getElementById('yak-live');
+  watch(yakLive, { childList: true }, () => {
+    if (yakLive.querySelector('.yak-panel')) taskDone('yakgwan-analysis');
+  });
+  const watchToast = toast => watch(toast, { childList: true, characterData: true, subtree: true }, () => {
+    if (toast.textContent.includes('복사했어요')) taskDone('pubmed-copy');
+  });
+  if (document.getElementById('pm-toast')) watchToast(document.getElementById('pm-toast'));
+  else {
+    const waitForToast = new MutationObserver(() => {
+      const toast = document.getElementById('pm-toast');
+      if (!toast) return;
+      waitForToast.disconnect();
+      watchToast(toast);
+      taskDone('pubmed-copy');
+    });
+    waitForToast.observe(document.body, { childList: true });
+  }
+
+  // 도움말 창의 '의견 보내기': 횟수 제한 없이 언제든 연다.
+  document.addEventListener('jangsoni:open-survey', () => {
+    if (!panel.open) open('feedback', null, '의견 보내기 버튼');
   });
 
   if (new URLSearchParams(location.search).has('survey')) {

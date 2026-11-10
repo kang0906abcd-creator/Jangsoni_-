@@ -84,6 +84,8 @@ html.companion-guiding { overflow: hidden; scrollbar-gutter: stable; }
 .companion-chat-guide ol { padding-left: 22px; margin: 12px 0 16px; }
 .companion-chat-guide li { margin-block: 8px; font-size: 14px; line-height: 1.7; }
 .companion-chat .companion-chat-guide-button { min-height: 32px; padding: 4px 8px; font-size: 13px; }
+.companion-chat-header > h2 { margin-right: auto; }
+.companion-chat-header { gap: 6px; }
 .companion-chat-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .companion-chat-conversation { display: flex; flex: 1; min-height: 0; flex-direction: column; }
 .companion-chat-log {

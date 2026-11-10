@@ -1250,6 +1250,8 @@ html.companion-guiding { overflow: hidden; scrollbar-gutter: stable; }
 .companion-chat-guide ol { padding-left: 22px; margin: 12px 0 16px; }
 .companion-chat-guide li { margin-block: 8px; font-size: 14px; line-height: 1.7; }
 .companion-chat .companion-chat-guide-button { min-height: 32px; padding: 4px 8px; font-size: 13px; }
+.companion-chat-header > h2 { margin-right: auto; }
+.companion-chat-header { gap: 6px; }
 .companion-chat-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .companion-chat-conversation { display: flex; flex: 1; min-height: 0; flex-direction: column; }
 .companion-chat-log {
@@ -2304,6 +2306,7 @@ body { background: #fdebdd; }
   <dialog id="companion-chat" class="companion-chat" aria-labelledby="companion-chat-title" hidden>
     <header class="companion-chat-header">
       <h2 id="companion-chat-title">장손이 도움말</h2>
+      <button type="button" class="companion-chat-guide-button" data-chat-feedback>의견 보내기</button>
       <button type="button" class="companion-chat-guide-button" data-chat-guide hidden>사용법</button>
       <button type="button" class="companion-chat-close" data-chat-close aria-label="채팅 닫기"><span data-icon="x" aria-hidden="true"></span></button>
     </header>
@@ -7689,6 +7692,7 @@ var Jangsoni = (() => {
     const guideTitle = guide.querySelector("h3");
     const guideSteps = guide.querySelector("ol");
     const guideButton = panel.querySelector("[data-chat-guide]");
+    const feedbackButton = panel.querySelector("[data-chat-feedback]");
     const closeButton = panel.querySelector(".companion-chat-close");
     const log = panel.querySelector('[role="log"]');
     const form = panel.querySelector("form");
@@ -7717,6 +7721,7 @@ var Jangsoni = (() => {
       conversation.hidden = view !== conversation;
       guide.hidden = view !== guide;
       closeButton.hidden = guiding;
+      feedbackButton.hidden = guiding;
       guideButton.hidden = guiding || !companionGuides[currentScreen2];
       panel.toggleAttribute("data-guiding", guiding);
       document.documentElement.classList.toggle("companion-guiding", guiding);
@@ -7835,6 +7840,10 @@ var Jangsoni = (() => {
       if (outside) confirmGuide();
     });
     guideButton.addEventListener("click", showGuide);
+    feedbackButton.addEventListener("click", () => {
+      close();
+      document.dispatchEvent(new CustomEvent("jangsoni:open-survey"));
+    });
     panel.querySelectorAll("[data-chat-close]").forEach((button) => {
       button.addEventListener("click", () => close(true));
     });
@@ -8189,6 +8198,12 @@ var Jangsoni = (() => {
     "\uACE0\uB9C8\uC6CC\uC694! \uB354 \uC88B\uC544\uC9C8 \uC810\uC774 \uC788\uB2E4\uBA74 \uC54C\uB824 \uC8FC\uC138\uC694.",
     "\uC640, \uCD5C\uACE0\uB77C\uB2C8 \uC2E0\uB098\uC694! \uBC14\uB77C\uB294 \uC810\uC774 \uC788\uB2E4\uBA74 \uC801\uC5B4 \uC8FC\uC138\uC694."
   ];
+  var openingLines = {
+    "task-done": "\uBC29\uAE08 \uAE30\uB2A5, \uB3C4\uC6C0\uC774 \uB410\uB098\uC694? \uBCC4\uC810 \uD558\uB098\uB9CC \uB0A8\uACA8 \uC8FC\uC2DC\uBA74 \uD798\uC774 \uB098\uC694!",
+    feedback: "\uC5B4\uB5A4 \uC758\uACAC\uC774\uB4E0 \uD658\uC601\uD574\uC694! \uD3B8\uD558\uAC8C \uB0A8\uACA8 \uC8FC\uC138\uC694."
+  };
+  var taskDoneDelay = 3500;
+  var taskNames = { "cardnews-save": "\uCE74\uB4DC\uB274\uC2A4 \uC800\uC7A5", "yakgwan-analysis": "\uC57D\uAD00 \uBD84\uC11D", "pubmed-copy": "\uB17C\uBB38 \uC778\uC6A9 \uBCF5\uC0AC" };
   var store = {
     get(area, key) {
       try {
@@ -8306,9 +8321,10 @@ var Jangsoni = (() => {
       choose(0);
       bubble.textContent = "\uBC8C\uC368 \uAC00\uC2DC\uB098\uC694? 30\uCD08\uB9CC \uC2DC\uAC04\uC744 \uB0B4\uC11C \uC7A5\uC190\uC774\uB97C \uB3C4\uC640\uC8FC\uC138\uC694!";
     }
-    function open(reason, then) {
+    function open(reason, then, label) {
       reset();
-      trigger = reason;
+      if (openingLines[reason]) bubble.textContent = openingLines[reason];
+      trigger = label || reason;
       afterClose = then || null;
       store.set("sessionStorage", seenKey, "1");
       panel.hidden = false;
@@ -8329,9 +8345,9 @@ var Jangsoni = (() => {
       if (store.get("sessionStorage", seenKey)) return false;
       return Date.now() - loadedAt >= survey_config_default.minEngagementSeconds * 1e3;
     }
-    function request(reason, then) {
+    function request(reason, then, label) {
       if (!canAsk()) return false;
-      open(reason, then);
+      open(reason, then, label);
       return true;
     }
     stars.forEach((star, index) => {
@@ -8391,6 +8407,41 @@ var Jangsoni = (() => {
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden") hiddenAt = Date.now();
       else if (hiddenAt && Date.now() - hiddenAt > 1500 && matchMedia("(pointer: coarse)").matches) request("returned");
+    });
+    let taskTimer = 0;
+    document.addEventListener("jangsoni:task-done", (event) => {
+      clearTimeout(taskTimer);
+      taskTimer = setTimeout(() => {
+        const busy = document.activeElement?.matches("input, select, textarea, [contenteditable]") || document.querySelector("dialog:modal");
+        if (!busy && document.visibilityState === "visible") request("task-done", null, `\uAE30\uB2A5 \uC0AC\uC6A9 \uD6C4 (${taskNames[event.detail] || event.detail})`);
+      }, taskDoneDelay);
+    });
+    const taskDone = (kind) => document.dispatchEvent(new CustomEvent("jangsoni:task-done", { detail: kind }));
+    const watch = (node, options, check) => node && new MutationObserver(check).observe(node, options);
+    const cardStatus = document.getElementById("cn-status");
+    watch(cardStatus, { childList: true, characterData: true, subtree: true }, () => {
+      if (cardStatus.textContent.includes("\uC800\uC7A5\uD588\uC5B4\uC694")) taskDone("cardnews-save");
+    });
+    const yakLive = document.getElementById("yak-live");
+    watch(yakLive, { childList: true }, () => {
+      if (yakLive.querySelector(".yak-panel")) taskDone("yakgwan-analysis");
+    });
+    const watchToast = (toast) => watch(toast, { childList: true, characterData: true, subtree: true }, () => {
+      if (toast.textContent.includes("\uBCF5\uC0AC\uD588\uC5B4\uC694")) taskDone("pubmed-copy");
+    });
+    if (document.getElementById("pm-toast")) watchToast(document.getElementById("pm-toast"));
+    else {
+      const waitForToast = new MutationObserver(() => {
+        const toast = document.getElementById("pm-toast");
+        if (!toast) return;
+        waitForToast.disconnect();
+        watchToast(toast);
+        taskDone("pubmed-copy");
+      });
+      waitForToast.observe(document.body, { childList: true });
+    }
+    document.addEventListener("jangsoni:open-survey", () => {
+      if (!panel.open) open("feedback", null, "\uC758\uACAC \uBCF4\uB0B4\uAE30 \uBC84\uD2BC");
     });
     if (new URLSearchParams(location.search).has("survey")) {
       store.remove("sessionStorage", seenKey);

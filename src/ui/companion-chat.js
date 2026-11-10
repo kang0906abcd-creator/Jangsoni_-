@@ -11,6 +11,7 @@ export function setupCompanionChat(trigger, reduce) {
   const guideTitle = guide.querySelector('h3');
   const guideSteps = guide.querySelector('ol');
   const guideButton = panel.querySelector('[data-chat-guide]');
+  const feedbackButton = panel.querySelector('[data-chat-feedback]');
   const closeButton = panel.querySelector('.companion-chat-close');
   const log = panel.querySelector('[role="log"]');
   const form = panel.querySelector('form');
@@ -39,6 +40,7 @@ export function setupCompanionChat(trigger, reduce) {
     conversation.hidden = view !== conversation;
     guide.hidden = view !== guide;
     closeButton.hidden = guiding;
+    feedbackButton.hidden = guiding;
     guideButton.hidden = guiding || !companionGuides[currentScreen];
     panel.toggleAttribute('data-guiding', guiding);
     document.documentElement.classList.toggle('companion-guiding', guiding);
@@ -166,6 +168,11 @@ export function setupCompanionChat(trigger, reduce) {
     if (outside) confirmGuide();
   });
   guideButton.addEventListener('click', showGuide);
+  // 언제든 의견 남기기: 도움말 창을 닫고 별점·개선 제안 설문을 연다 (src/ui/exit-survey.js)
+  feedbackButton.addEventListener('click', () => {
+    close();
+    document.dispatchEvent(new CustomEvent('jangsoni:open-survey'));
+  });
   panel.querySelectorAll('[data-chat-close]').forEach(button => {
     button.addEventListener('click', () => close(true));
   });
