@@ -938,6 +938,7 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 #intro .workbench-heading .section-desc { margin-top:17px; }
 #intro .workbench-card { max-width:880px; background:#fff; border:1px solid #e8eef3; box-shadow:0 24px 80px rgba(44,90,132,.08); border-radius:30px; margin:0 auto; padding:40px; }
 #intro #case-form.case-form { width:100%; max-width:none; margin:0; background:transparent; border:0; border-radius:0; padding:0; gap:22px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+#intro #case-form.case-form > * { min-width:0; }
 #intro #case-form.case-form label { font-size:13px; font-weight:800; color:#45586c; gap:9px; }
 #intro #case-form.case-form input { font-size:15px; padding:15px 16px; border-radius:12px; border:1px solid #d9e2eb; background:#fcfdff; min-width:0; }
 #intro #case-form.case-form input:focus { outline:2px solid #98bfe6; outline-offset:2px; border-color:var(--js-blue); }
@@ -1050,7 +1051,7 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
  #intro .demo-paper { padding:21px 17px; }
  #intro .demo-line { grid-template-columns:80px 1fr; font-size:13px; }
  #intro .workbench-card { padding:23px 20px; border-radius:22px; }
- #intro #case-form.case-form { grid-template-columns:1fr; gap:17px; }
+ #intro #case-form.case-form { grid-template-columns:minmax(0,1fr); gap:17px; }
  #intro .workbench-bottom { display:block; }
  #intro #start { margin-top:22px; width:100%; }
  #intro .landing-footer { flex-direction:column; align-items:flex-start; gap:12px; }
@@ -1517,6 +1518,8 @@ html.companion-guiding { overflow: hidden; scrollbar-gutter: stable; }
   .work-screen .search-intro { padding: 20px 16px; gap: 12px; }
   .work-screen .search-intro-mark { flex-basis: 38px; height: 38px; border-radius: 12px; font-size: 25px; }
   .work-screen :is(.cn-toolbar .cn-btn,.controls > .back) { flex: 1 1 150px; }
+  /* 아이폰 Safari는 16px보다 작은 입력칸을 누르면 화면을 확대해 레이아웃이 깨져 보임 */
+  :is(#intro,.work-screen) :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea) { font-size: 16px !important; }
 }
 
 </style>

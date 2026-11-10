@@ -202,4 +202,6 @@
   .work-screen .search-intro { padding: 20px 16px; gap: 12px; }
   .work-screen .search-intro-mark { flex-basis: 38px; height: 38px; border-radius: 12px; font-size: 25px; }
   .work-screen :is(.cn-toolbar .cn-btn,.controls > .back) { flex: 1 1 150px; }
+  /* 아이폰 Safari는 16px보다 작은 입력칸을 누르면 화면을 확대해 레이아웃이 깨져 보임 */
+  :is(#intro,.work-screen) :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea) { font-size: 16px !important; }
 }
