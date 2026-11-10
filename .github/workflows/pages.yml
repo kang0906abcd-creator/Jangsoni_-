@@ -1,0 +1,42 @@
+name: Deploy Hyundai prototype to GitHub Pages
+
+on:
+  push:
+    branches: [v2-hyundai-style]
+    paths:
+      - index.html
+      - docs/qr/jangsoni-hyundai.png
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/v2-hyundai-style'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - name: Prepare the verified prototype
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+          cp docs/qr/jangsoni-hyundai.png _site/qr.png
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

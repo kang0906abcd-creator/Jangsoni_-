@@ -1,0 +1,92 @@
+{
+  "hero": {
+    "image": "hero.webp",
+    "size": [
+      1254,
+      1254
+    ],
+    "blinkImage": "closed-eyes.webp",
+    "eyes": [
+      [
+        483,
+        443,
+        88,
+        76
+      ],
+      [
+        784,
+        423,
+        88,
+        76
+      ]
+    ],
+    "edge": 0.84
+  },
+  "journey": {
+    "image": "walk.webp",
+    "flipX": true,
+    "stand": [
+      0,
+      0,
+      512,
+      512
+    ],
+    "walk": [
+      [
+        497,
+        2,
+        512,
+        512
+      ],
+      [
+        1005,
+        2,
+        512,
+        512
+      ],
+      [
+        7,
+        512,
+        512,
+        512
+      ],
+      [
+        501,
+        513,
+        512,
+        512
+      ],
+      [
+        1007,
+        512,
+        512,
+        512
+      ]
+    ]
+  },
+  "companion": {
+    "image": "companion.webp",
+    "grab": { "image": "grab.png", "frames": [[0, 0, 887, 887], [887, 0, 887, 887]] },
+    "flipX": true,
+    "size": [
+      627,
+      627
+    ],
+    "blinkImage": "companion-closed-eyes.webp",
+    "eyes": [
+      [
+        314,
+        201,
+        33,
+        29
+      ],
+      [
+        429,
+        188,
+        33,
+        29
+      ]
+    ],
+    "edge": 0.84
+  }
+}
