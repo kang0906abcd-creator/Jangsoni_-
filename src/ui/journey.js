@@ -86,7 +86,7 @@ export function setupJourney(root, tour, reduce, mascot, handoff) {
    clearTimeout(revealTimer);
    if(!desktopJourney.matches) revealTimer=setTimeout(()=>revealCard(index),reduce.matches?0:360);
    if(sentence) sentence.textContent=phrases[index];
-   if(counter) counter.textContent=String(index+1).padStart(2,'0')+' / 07';
+   if(counter) counter.textContent=String(index+1).padStart(2,'0')+' / '+String(steps.length).padStart(2,'0');
    if(bar) bar.style.width=((index+1)/steps.length*100)+'%';
  }
  function revealCard(index){

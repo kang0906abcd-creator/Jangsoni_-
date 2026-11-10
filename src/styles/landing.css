@@ -149,17 +149,17 @@ body { background:#FBFCFE; color:var(--js-ink); font-family:Pretendard, "Apple S
 #intro .landing-reveal.is-visible,#intro .landing-reveal:focus-within { opacity:1; transform:none; }
 
 @media(prefers-reduced-motion:no-preference){
- html:has(:is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#timeline,#law):not([hidden])):not(:has(:is(input,select,textarea,[contenteditable]):focus)) {
+ html:has(:is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#law):not([hidden])):not(:has(:is(input,select,textarea,[contenteditable]):focus)) {
    scroll-snap-type:y proximity;
    scroll-padding-block-start:16px;
  }
- :is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#timeline,#law),
+ :is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#law),
  #menu .menu-item,
- :is(#yakgwan,#fss,#koicd,#pubmed,#cardnews,#timeline,#law) > .wrap > .note,
+ :is(#yakgwan,#fss,#koicd,#pubmed,#cardnews,#law) > .wrap > .note,
  #law .live-law > .note { scroll-snap-align:start; }
 
  #menu:not([hidden]) .menu-item > small,
- :is(#yakgwan,#fss,#koicd,#pubmed,#cardnews,#timeline,#law):not([hidden]) > .wrap > .note,
+ :is(#yakgwan,#fss,#koicd,#pubmed,#cardnews,#law):not([hidden]) > .wrap > .note,
  #law:not([hidden]) .live-law > .note {
    animation:js-explanation-enter 420ms var(--js-motion-ease) both;
  }

@@ -40,6 +40,8 @@ const values = Object.fromEntries(await Promise.all([
   ['KOICD_DATA', readText('src/data/koicd.js')],
   ['ANALYSIS_JS', readText('src/analysis.js')],
   ['LUCIDE_LICENSE', readText('node_modules/lucide/LICENSE')],
+  // 카드뉴스 이미지 저장용 html2canvas: 파일 안에 넣어 인터넷 없이도 저장되게 함
+  ['H2C_JS', readText('node_modules/html2canvas/dist/html2canvas.min.js').then(text => text.trimEnd().replace(/<\/script/gi, '<\\/script'))],
   ...Object.entries(assets.html),
   ['APP_JS', app.outputFiles[0].text.trimEnd().replace(/<\/script/gi, '<\\/script')],
 ].map(async ([name, value]) => [name, await value])));

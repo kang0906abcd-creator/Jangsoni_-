@@ -1,7 +1,7 @@
 import {
   createElement, ArrowDown, ArrowLeft, ArrowUpRight, Check, CircleHelp, Clock,
   Ellipsis, FileText, Info, Landmark, LayoutGrid, Link, Minus, Plus, Scale,
-  Search, Stethoscope, X,
+  Search, Star, Stethoscope, X,
 } from 'lucide';
 
 // All interface icons are selected here from Lucide; do not add emoji or other sets.
@@ -10,7 +10,7 @@ const icons = {
   check: Check, 'circle-help': CircleHelp, clock: Clock, ellipsis: Ellipsis,
   'file-text': FileText, info: Info, landmark: Landmark, 'layout-grid': LayoutGrid,
   link: Link, minus: Minus, plus: Plus, scale: Scale, search: Search,
-  stethoscope: Stethoscope, x: X,
+  star: Star, stethoscope: Stethoscope, x: X,
 };
 
 export function renderIcon(element, name = element.dataset.icon) {

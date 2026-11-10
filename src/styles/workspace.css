@@ -1,5 +1,5 @@
 /* Shared application chrome. Card-news artwork keeps its own export styles. */
-:is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#timeline,#law,#soon).work-screen {
+:is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#law,#soon).work-screen {
   min-height: 100svh;
   padding: 0;
   background: #fbfcfe;
@@ -182,6 +182,7 @@
 .search-examples { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 12px; }
 .search-examples button { min-height: 36px; padding: 6px 12px; border: 1px solid #ffd1b2; border-radius: 999px; background: #fff; color: #ff7a29; font: inherit; font-size: 13px; cursor: pointer; }
 #koicd:has(#koicd-result:not(:empty)) .search-intro { display: none; }
+#pubmed:has(#pubmed-list:not(:empty)) .search-intro { display: none; }
 @media (max-width: 1000px) {
   .work-screen .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

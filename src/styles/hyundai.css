@@ -2,7 +2,7 @@
 body { background: #fdebdd; }
 #intro { --journey-stage-color:#fdebdd; }
 #intro,
-:is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#timeline,#law,#soon).work-screen {
+:is(#menu,#yakgwan,#fss,#koicd,#pubmed,#cardnews,#law,#soon).work-screen {
   background: #fdebdd;
 }
 #intro :is(.about-band,.form-guide,.journey-section,.demo-section,.workbench-section) { background: #fdebdd; }
