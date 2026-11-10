@@ -102,7 +102,7 @@ try {
           }
           await page.locator('#menu [data-go=cardnews]').tap();
           await page.locator('[data-guide-confirm]').tap();
-          assert.equal(await page.locator('.cn-check').first().locator('svg.app-icon').count(), 1);
+          assert.equal(await page.locator('.cn-link a').first().locator('svg.app-icon').count(), 1);
           await page.locator('.cn-hook em').first().fill('입력한 문자 🔗 보존');
           assert.equal(await page.locator('.cn-hook em').first().textContent(), '입력한 문자 🔗 보존');
         }

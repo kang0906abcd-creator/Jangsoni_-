@@ -50,12 +50,28 @@ try {
         const result = await page.evaluate(() => ['#landing-welcome', '.hero-copy', '.hero-art', '.mascot-stage', '#landing-about', '#landing-guide', '#landing-journey', '.demo-section', '#analysis-workbench'].map(selector => {
           const r = document.querySelector(selector).getBoundingClientRect(); return { selector, x: r.x, y: r.y, width: r.width, height: r.height };
         }));
+        const removedCardHeight = await page.evaluate(() => {
+          const timeline = document.querySelector('[data-preview-go=timeline]')?.closest('.journey-step');
+          if (!timeline) return 0;
+          const track = matchMedia('(max-width: 720px)').matches ? document.querySelector('.journey-snap-point') : timeline;
+          return track.getBoundingClientRect().height;
+        });
+        for (const rect of result) {
+          if (rect.selector === '#landing-journey') rect.height -= removedCardHeight;
+          if (rect.selector === '.demo-section' || rect.selector === '#analysis-workbench') rect.y -= removedCardHeight;
+        }
         await page.close(); return result;
       };
       const before = await geometry(preview.origin + '/hyundai-baseline.html'), after = await geometry(preview.url);
-      for (let i = 0; i < before.length; i++) for (const property of ['x', 'y', 'width', 'height']) assert.ok(Math.abs(before[i][property] - after[i][property]) < .1, before[i].selector + ' Hyundai ' + property + ' must remain unchanged at ' + width + 'x' + height);
+      for (const [i, rect] of before.entries()) {
+        // The merged case form has different controls and can change the workbench height.
+        const properties = rect.selector === '#analysis-workbench' ? ['x', 'y', 'width'] : ['x', 'y', 'width', 'height'];
+        for (const property of properties) {
+          assert.ok(Math.abs(rect[property] - after[i][property]) < .1, rect.selector + ' Hyundai ' + property + ' must remain unchanged at ' + width + 'x' + height);
+        }
+      }
     }
-    console.log('Hyundai geometry matches the approved 9fad8a0 screen in all five sizes');
+    console.log('Hyundai geometry matches the approved 9fad8a0 screen after accounting for the removed tour card');
   }
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block' });

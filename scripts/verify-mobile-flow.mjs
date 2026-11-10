@@ -149,13 +149,14 @@ try {
       const { page, errors } = await open(browser, width, height);
       const swipe = await inputFor(page, mode);
       const settle = () => page.waitForTimeout(1100);
+      const cardCount = await page.locator('.journey-step').count();
       const reach = async (selector, direction, label, nativeFormExit = false) => {
         for (let i = 0; i < 20; i++) {
           const target = await top(page, selector), current = await page.evaluate(() => scrollY);
           if (Math.abs(current - target) < 2) return;
           if (nativeFormExit && current < target - 2) {
             // The input form deliberately keeps native panning. Its last swipe can cross the boundary.
-            assert.ok(current > await cardTop(page, 6) + 2, label + ' must not skip the last tour card');
+            assert.ok(current > await cardTop(page, cardCount - 1) + 2, label + ' must not skip the last tour card');
             assert.ok(await page.evaluate(() => !!document.elementFromPoint(innerWidth / 2, Math.round(innerHeight * .65))?.closest('.demo-section')), label + ' must re-enter the controlled result section');
             return;
           }
@@ -169,7 +170,7 @@ try {
       }
       await swipe(1); await arrived(page, await top(page, '#landing-guide'), mode + ' guide entry');
       await reach('#landing-journey', 1, mode + ' guide to tour title');
-      for (let index = 0; index < 7; index++) {
+      for (let index = 0; index < cardCount; index++) {
         await swipe(1); await arrived(page, await cardTop(page, index), mode + ' forward card ' + index);
         assert.equal(await page.locator('.journey-step').nth(index).getAttribute('aria-current'), 'step');
       }
@@ -178,7 +179,7 @@ try {
       await reach('#analysis-workbench', 1, mode + ' results to input');
       assert.equal(await page.evaluate(() => window.flowHandoffs), 1, 'Reading a tall result section must not repeat the mascot handoff');
       await reach('.demo-section', -1, mode + ' input to results', true);
-      for (let index = 6; index >= 0; index--) {
+      for (let index = cardCount - 1; index >= 0; index--) {
         await swipe(-1); await arrived(page, await cardTop(page, index), mode + ' reverse card ' + index);
       }
       await swipe(-1); await arrived(page, await top(page, '#landing-journey'), mode + ' reverse to tour title');
@@ -192,7 +193,7 @@ try {
         assert.ok(touches.every(event => event.snap === 'none'), 'Native root snapping must not take over during touch input');
       }
       assert.deepEqual(errors, []);
-      console.log(mode + ' ' + width + 'x' + height + ': continuous intro → guide → title → seven cards → results → input and reverse, with no programmatic section jumps');
+      console.log(mode + ' ' + width + 'x' + height + ': continuous intro → guide → title → ' + cardCount + ' cards → results → input and reverse, with no programmatic section jumps');
       await page.close();
     }
   } finally { await browser.close(); }

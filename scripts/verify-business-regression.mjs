@@ -3,35 +3,34 @@ import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 import { transform } from 'esbuild';
 import { chromium } from 'playwright-core';
 import { serveTestPreview } from './test-preview.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const require = createRequire(import.meta.url);
 execFileSync(process.execPath, ['scripts/build.mjs', '--check'], { cwd: root, stdio: 'inherit' });
-const baseline = execFileSync('git', ['show', 'main:index.html'], { cwd: root, encoding: 'utf8', maxBuffer: 40 * 1024 * 1024 });
+const baselineRef = process.env.BASELINE_REF || 'local-features';
+const baseline = execFileSync('git', ['show', baselineRef + ':index.html'], { cwd: root, encoding: 'utf8', maxBuffer: 40 * 1024 * 1024 });
 const blocks = [...baseline.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];
 const original = blocks.find(block => block[2].includes('const SCREENS'))[2];
 const current = await readFile(join(root, 'src/analysis.js'), 'utf8');
-const start = original.slice(original.indexOf('    // 시작하기'), original.indexOf('    // 메뉴 버튼'));
+const start = original.slice(original.indexOf('    // 시작하기 →'), original.indexOf('    // 메뉴 버튼'));
 const comparable = current
   .replace(/    let analyzedCaseKey = "";[\s\S]*?(?=    \/\/ 메뉴 버튼)/, () => start)
+  .replace('new ResizeObserver(() => requestAnimationFrame(cnLintAll))', 'new ResizeObserver(() => cnLintAll())')
   .replace('Jangsoni.navigate(btn.dataset.go, btn.dataset.scrollTarget)', 'showScreen(btn.dataset.go)')
   .replace('Jangsoni.navigate("cardnews")', 'showScreen("cardnews")')
   .replace('.contentWindow.location.replace(url + "&_t=" + Date.now());', '.src = url + "&_t=" + Date.now();');
 const normalizeCode = async code => (await transform(code, { minifyWhitespace: true, legalComments: 'none' })).code;
-assert.equal(await normalizeCode(comparable), await normalizeCode(original), 'Business code differs beyond the reviewed navigation/preview-entry changes');
+assert.equal(await normalizeCode(comparable), await normalizeCode(original), 'Business code differs from ' + baselineRef + ' beyond the reviewed navigation, preview-entry and card layout timing changes');
 for (const [index, name] of ['fss', 'koicd'].entries()) {
   assert.equal((await readFile(join(root, 'src/data/' + name + '.js'), 'utf8')).trim().replace(/\r\n/g, '\n'), blocks[index][2].trim().replace(/\r\n/g, '\n'), name + ' packed data');
 }
-console.log('Source parity:', JSON.stringify({ originalFunctions: [...original.matchAll(/function ([a-zA-Z0-9_]+)\(/g)].length, originalEventConnections: [...original.matchAll(/addEventListener\(/g)].length, bothDataPacksMatch: true, navigationAndPreviewChangesAccountedFor: true }));
+console.log('Source parity:', JSON.stringify({ originalFunctions: [...original.matchAll(/function ([a-zA-Z0-9_]+)\(/g)].length, originalEventConnections: [...original.matchAll(/addEventListener\(/g)].length, bothDataPacksMatch: true, reviewedChangesAccountedFor: true }));
 
-const preview = await serveTestPreview({ '/main.html': baseline });
-const renderer = await readFile(require.resolve('html2canvas/dist/html2canvas.min.js'));
+const preview = await serveTestPreview({ '/baseline.html': baseline });
 const browser = await chromium.launch({ channel: 'chrome' });
-const screens = ['timeline', 'yakgwan', 'koicd', 'law', 'pubmed', 'fss', 'cardnews'];
+const screens = ['yakgwan', 'koicd', 'law', 'pubmed', 'fss', 'cardnews'];
 const clean = value => value.replace(/\s+/g, ' ').trim();
 const text = async (page, selector) => clean(await page.locator(selector).evaluate(element => {
   const copy = element.cloneNode(true);
@@ -53,8 +52,15 @@ async function acknowledge(page) {
   if (await page.locator('#companion-chat[data-guiding]').isVisible()) await page.locator('[data-guide-confirm]').click();
 }
 
+async function requestExport(page, button) {
+  await button.click();
+  if ((await text(page, '#cn-status')).startsWith('확인해 주세요:')) await button.click();
+}
+
 async function inspect(file, modern) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', serviceWorkers: 'block', acceptDownloads: true });
+  // Compare case timestamps and date-based filters under the same clock.
+  await page.clock.setFixedTime(new Date('2026-11-11T03:00:00Z'));
   page.setDefaultTimeout(8000);
   const errors = [], requests = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -62,7 +68,6 @@ async function inspect(file, modern) {
     const request = route.request(), url = request.url();
     if (preview.matches(url)) return route.continue();
     requests.push({ url, body: request.postData() });
-    if (url.includes('/html2canvas/1.4.1/')) return route.fulfill({ body: renderer, contentType: 'application/javascript' });
     if (url.includes('eutils.ncbi.nlm.nih.gov')) return route.fulfill({
       headers: { 'access-control-allow-origin': '*' }, json: url.includes('esearch')
         ? { esearchresult: { count: '1', idlist: ['123'] } }
@@ -74,7 +79,7 @@ async function inspect(file, modern) {
   });
   await page.goto(file);
   if (modern) await page.locator('.hero-actions .landing-primary').click();
-  const result = { fields: { case: await schema(page, '#case-form') }, outputs: {}, timeline: [], law: [], yak: [], kcd: [], fss: [], templates: [] };
+  const result = { fields: { case: await schema(page, '#case-form') }, outputs: {}, law: [], yak: [], kcd: [], fss: [], templates: [] };
   for (const [id, value] of Object.entries({ 'in-date': '2020-01-02', 'in-job': '사무직', 'in-code': 'I21', 'in-cover': '일반상해사망', 'in-issue': '고지의무' })) await page.locator('#' + id).fill(value);
   await page.locator('#start').click();
   await page.locator('#ar-pubmed').getByText('Regression paper', { exact: false }).waitFor();
@@ -87,35 +92,13 @@ async function inspect(file, modern) {
     if (screen === 'koicd') await page.waitForFunction(() => document.querySelector('#koicd-result').textContent.includes('I21'));
     if (screen === 'fss') await page.locator('#fss-result .fss-overview').waitFor();
     result.fields[screen] = await schema(page, '#' + screen);
-    if (screen === 'timeline') {
-      for (const scenario of ['empty', 'sample', 'related-job', 'notified-job', 'waiting', 'before-contract']) {
-        if (scenario !== 'empty') await page.locator('#tl-sample').click();
-        if (scenario === 'related-job') await page.locator('#tl-jobrelated').check();
-        if (scenario === 'notified-job') await page.locator('#tl-notified').check();
-        if (scenario === 'waiting') { await page.locator('#tl-waitdays').fill('90'); await page.locator('#tl-event').fill('2024-04-01'); }
-        if (scenario === 'before-contract') await page.locator('#tl-event').fill('2024-01-01');
-        await page.locator('#tl-run').click();
-        result.timeline.push({ scenario, output: await text(page, '#tl-result'), enabled: await page.locator('#tl-apply-cn').isEnabled() });
-      }
-      const before = await page.locator('.tl-row').count();
-      await page.locator('#tl-addrow').click();
-      await page.locator('.tl-row').last().locator('.tl-r-text').fill('검증용 진료 이력');
-      await page.locator('.tl-row').last().locator('.tl-r-told').check();
-      assert.equal(await page.locator('.tl-row').count(), before + 1);
-      await page.locator('.tl-row').last().locator('.tl-del').click();
-      assert.equal(await page.locator('.tl-row').count(), before);
-      await page.locator('#tl-apply-cn').click();
-      await acknowledge(page);
-      result.outputs.timelineCard = await text(page, '#cn-list');
-      await back('cardnews');
-      console.log(modern ? 'Current' : 'Main', 'timeline: six scenarios, history editing, card-news transfer');
-      continue;
-    }
     if (screen === 'yakgwan') for (const label of await page.locator('#yak-groups button').allTextContents()) {
       await page.locator('#yak-groups').getByRole('button', { name: label, exact: true }).click();
       result.yak.push({ label, output: await text(page, '#yak-panel') });
     }
     if (screen === 'law') {
+      result.outputs.lawRelated = await text(page, '#law-related');
+      await page.locator('.law-pane-tab[data-pane=browse]').click();
       for (const category of await page.locator('.tab[data-category]').evaluateAll(els => els.map(el => el.dataset.category))) {
         await page.locator('.tab[data-category="' + category + '"]').click();
         const types = category === '상해사망' ? await page.locator('#type-filters button').evaluateAll(els => els.map(el => el.dataset.type)) : [''];
@@ -127,9 +110,12 @@ async function inspect(file, modern) {
       await page.locator('#search').fill('없는검증문구');
       result.outputs.lawEmpty = await text(page, '#cards');
       await page.locator('#search').fill('');
-      await page.locator('#live-law-query').fill('보험금 검증');
-      await page.locator('#live-law-form button').click();
-      result.outputs.customLawAddress = await page.locator('#live-law-newtab').getAttribute('href');
+      await page.locator('.law-pane-tab[data-pane=latest]').click();
+      for (const query of ['뇌경색', '고지의무', '없는검증문구']) {
+        await page.locator('#live-law-query').fill(query);
+        await page.locator('#live-law-form button[type=submit]').click();
+        result.law.push({ query, output: await text(page, '#live-law-count') + ' ' + await text(page, '#live-law-list'), address: await page.locator('#live-law-newtab').getAttribute('href') });
+      }
     }
     if (screen === 'koicd') {
       for (const query of ['I21', 'I63', '뇌경색', '없는검증문구']) {
@@ -168,8 +154,10 @@ async function inspect(file, modern) {
     }
     if (screen === 'pubmed') {
       await page.locator('#pubmed-query').fill('stroke prognosis');
-      const popup = page.waitForEvent('popup'); await page.locator('#pubmed-form button').click();
-      const opened = await popup; await opened.waitForLoadState(); result.outputs.pubmed = opened.url(); await opened.close();
+      await page.locator('#pubmed-form button[type=submit]').click();
+      await page.locator('#pubmed-list').getByText('Regression paper', { exact: false }).first().waitFor();
+      result.outputs.pubmed = await text(page, '#pubmed-list');
+      result.outputs.pubmedLink = await page.locator('#pubmed-open').getAttribute('href');
     }
     if (screen === 'cardnews') {
       for (const label of await page.locator('#cn-tabs button').allTextContents()) {
@@ -181,26 +169,26 @@ async function inspect(file, modern) {
           result.templates.push({ label, sub, cards, fields: await schema(page, '#cn-list'), output: await text(page, '#cn-list') });
         }
       }
-      const exportTemplate = result.templates.find(template => template.cards === 6);
-      assert.ok(exportTemplate, 'Original six-card template must remain available');
+      const exportTemplate = result.templates[0];
+      assert.ok(exportTemplate, 'At least one card-news template must be available');
       await page.locator('#cn-tabs').getByRole('button', { name: exportTemplate.label, exact: true }).click();
       await page.locator('#cn-subs').getByRole('button', { name: exportTemplate.sub, exact: true }).click();
       const field = page.locator('.cn-card [contenteditable=true]').first(); await field.fill('검증용 편집 문구');
       await page.locator('.cn-meta-value[data-meta=product]').first().fill('검증용 상품');
-      assert.deepEqual(await page.locator('.cn-meta-value[data-meta=product]').allTextContents(), Array(6).fill('검증용 상품'));
+      assert.deepEqual(await page.locator('.cn-meta-value[data-meta=product]').allTextContents(), Array(exportTemplate.cards).fill('검증용 상품'));
       const downloads = []; page.on('download', file => downloads.push(file));
-      await page.locator('#cn-save-all').click();
-      await page.waitForFunction(() => document.querySelector('#cn-status').textContent.includes('6장 저장했어요'), {}, { timeout: 45000 });
-      assert.equal(downloads.length, 6);
+      await requestExport(page, page.locator('#cn-save-all'));
+      await page.waitForFunction(count => document.querySelector('#cn-status').textContent.includes(count + '장을 저장했어요'), exportTemplate.cards, { timeout: 45000 });
+      assert.equal(downloads.length, exportTemplate.cards);
       for (const file of downloads) {
         assert.equal(await file.failure(), null);
         const data = await readFile(await file.path());
         assert.equal(data.readUInt32BE(16), 1080); assert.equal(data.readUInt32BE(20), 1080);
       }
-      console.log(modern ? 'Current' : 'Main', 'all card-news templates and six real 1080px PNG downloads');
+      console.log(modern ? 'Current' : 'Baseline', 'all card-news templates and ' + exportTemplate.cards + ' offline 1080px PNG downloads');
     }
     await back(screen);
-    console.log(modern ? 'Current' : 'Main', screen, 'controls and outputs');
+    console.log(modern ? 'Current' : 'Baseline', screen, 'controls and outputs');
   }
   await page.reload();
   assert.equal(await page.locator('#in-job').inputValue(), '사무직');
@@ -220,6 +208,7 @@ async function navigation() {
   await page.locator('#in-job').fill('검증 직업'); await page.locator('#in-code').fill('I21');
   await page.locator('#start').click();
   await page.locator('#menu [data-go=law]').click(); await acknowledge(page);
+  await page.locator('.law-pane-tab[data-pane=browse]').click();
   for (const category of ['장해', '암', '상해사망']) await page.locator('.tab[data-category="' + category + '"]').click();
   await page.goBack(); await page.locator('#menu').waitFor();
   await page.goForward(); await page.locator('#law').waitFor();
@@ -234,7 +223,6 @@ async function navigation() {
     await page.locator('[data-preview-go=' + screen + ']').click(); await acknowledge(page);
     await page.locator('#' + screen).waitFor();
     assert.ok((await text(page, '#case-summary')).includes('검증 직업'));
-    if (screen === 'timeline') assert.equal(await page.locator('#tl-job0').inputValue(), '검증 직업');
     if (screen === 'pubmed') for (const value of await page.locator('#' + screen + ' [data-example-value]').evaluateAll(els => els.map(el => el.dataset.exampleValue))) {
       const button = page.locator('#' + screen + ' [data-example-value="' + value + '"]');
       const id = await button.getAttribute('data-example-input'); await button.click();
@@ -248,8 +236,7 @@ async function navigation() {
   const empty = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', serviceWorkers: 'block', acceptDownloads: true });
   empty.setDefaultTimeout(8000);
   empty.on('pageerror', error => errors.push(error.message));
-  await empty.route(/^https?:/, route => preview.matches(route.request().url()) ? route.continue() : route.request().url().includes('/html2canvas/1.4.1/')
-    ? route.fulfill({ body: renderer, contentType: 'application/javascript' }) : route.abort());
+  await empty.route(/^https?:/, route => preview.matches(route.request().url()) ? route.continue() : route.abort());
   const openEmpty = async screen => {
     await empty.locator('.hero-actions .landing-primary').click(); await empty.locator('#start').click();
     await empty.locator('#menu [data-go=' + screen + ']').click(); await acknowledge(empty);
@@ -269,10 +256,10 @@ async function navigation() {
   await empty.locator('.cn-meta-value[data-meta=product]').first().fill('저장 검증 상품');
   await empty.waitForTimeout(550); await empty.reload(); await openEmpty('cardnews');
   assert.equal(await edit.textContent(), '검증용 저장 문구');
-  assert.deepEqual(await empty.locator('.cn-meta-value[data-meta=product]').allTextContents(), Array(6).fill('저장 검증 상품'));
+  assert.deepEqual(await empty.locator('.cn-meta-value[data-meta=product]').allTextContents(), Array(await empty.locator('.cn-card').count()).fill('저장 검증 상품'));
   const [download] = await Promise.all([
     empty.waitForEvent('download', { timeout: 45000 }),
-    empty.locator('.cn-wrap').first().getByRole('button').click(),
+    requestExport(empty, empty.getByRole('button', { name: '1장 이미지(PNG)로 저장', exact: true })),
   ]).catch(async error => { throw new Error('Single-card export: ' + await text(empty, '#cn-status'), { cause: error }); });
   const png = await readFile(await download.path());
   assert.equal(png.readUInt32BE(16), 1080); assert.equal(png.readUInt32BE(20), 1080);
@@ -280,15 +267,15 @@ async function navigation() {
   await empty.locator('#cn-reset').click(); assert.equal(await edit.textContent(), '검증용 저장 문구');
   await empty.locator('#cn-reset').click(); assert.equal(await edit.textContent(), originalText);
   assert.deepEqual(errors, []); await empty.close();
-  console.log('Navigation: back/forward through live-law updates, edit-input target, all seven direct tour entries, preserved case context and search examples');
+  console.log('Navigation: back/forward through live-law updates, edit-input target, all six direct tour entries, preserved case context and search examples');
   console.log('Editor: saved text and metadata survive reload; single-card PNG and confirmed reset');
 }
 
 try {
-  const before = await inspect(preview.origin + '/main.html', false);
+  const before = await inspect(preview.origin + '/baseline.html', false);
   const after = await inspect(preview.url, true);
-  assert.deepEqual(after, before, 'An input, template, navigation address or business result differs from main');
-  console.log('MATCH:', JSON.stringify({ fields: Object.fromEntries(Object.entries(after.fields).map(([name, fields]) => [name, fields.length])), timelineScenarios: after.timeline.length, lawStates: after.law.length, yakGroups: after.yak.length, kcdQueries: after.kcd.length, fssStates: after.fss.length, cardTemplates: after.templates.length }));
+  assert.deepEqual(after, before, 'An input, template, navigation address or business result differs from ' + baselineRef);
+  console.log('MATCH:', JSON.stringify({ fields: Object.fromEntries(Object.entries(after.fields).map(([name, fields]) => [name, fields.length])), lawStates: after.law.length, yakGroups: after.yak.length, kcdQueries: after.kcd.length, fssStates: after.fss.length, cardTemplates: after.templates.length }));
   await navigation();
 } finally {
   await browser.close();

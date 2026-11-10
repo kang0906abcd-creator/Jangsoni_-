@@ -60,7 +60,7 @@ try {
     await drag('p', -1);
     await arrived(3, 'A second drag during travel must not reverse the first destination');
     await page.locator('.step-toggle').nth(2).click(); await arrived(2, 'Short heading click');
-    await page.locator('[data-preview-go=koicd]').click(); await page.locator('#koicd').waitFor();
+    await page.locator('[data-preview-go=law]').click(); await page.locator('#law').waitFor();
     if (await page.locator('#companion-chat').isVisible()) await page.locator('[data-guide-confirm]').click();
     await page.goBack(); await page.locator('#intro').waitFor();
     assert.equal(await page.evaluate(() => window.touchInputs), 0, 'These checks must use a real mouse path, not emulated touch');

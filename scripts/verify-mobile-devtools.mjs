@@ -80,8 +80,8 @@ try {
     if (width === 390) {
       await align(0);
       const actorLeft = await page.locator('.journey-mascot-wrap').evaluate(el => el.getBoundingClientRect().left);
-      for (let index = 1; index < 7; index++) { await drag('p', 1); await arrived(index); }
-      for (let index = 5; index >= 0; index--) { await drag('p', -1); await arrived(index); }
+      for (let index = 1; index < 6; index++) { await drag('p', 1); await arrived(index); }
+      for (let index = 4; index >= 0; index--) { await drag('p', -1); await arrived(index); }
       assert.ok(Math.abs(await page.locator('.journey-mascot-wrap').evaluate(el => el.getBoundingClientRect().left) - actorLeft) < .5, 'Keep the existing top mascot position');
       await align(2);
       await drag('p', 1, { distance: 9 }); await page.waitForTimeout(1000); await arrived(2);
@@ -101,15 +101,15 @@ try {
       const link = await page.locator('.journey-step.is-active .step-open').boundingBox();
       await mouseTouch('mousePressed', link.x + link.width / 2, link.y + link.height / 2);
       await mouseTouch('mouseReleased', link.x + link.width / 2, link.y + link.height / 2);
-      await page.locator('#koicd').waitFor();
+      await page.locator('#law').waitFor();
       if (await page.locator('#companion-chat[data-guiding]').isVisible()) await page.locator('[data-guide-confirm]').tap();
       await page.goBack(); await page.locator('#intro').waitFor();
       const walks = (await page.evaluate(() => window.journeyDurations)).filter(duration => duration > 600);
-      assert.ok(walks.length >= 14, 'Observe complete walking transitions across the card checks');
+      assert.ok(walks.length >= 12, 'Observe complete walking transitions across the card checks');
       assert.ok(walks.every(duration => duration >= 880), 'Repeated input must retain the fixed walking duration');
     }
     assert.deepEqual(errors, []);
-    console.log(width + '×' + height + ': Chrome mouse-to-touch conversion, slow card drags both ways, pointer capture and native pan cancelled before the threshold' + (width === 390 ? ', text/title/tags/link, all seven cards, jitter/horizontal/cancel, rapid re-drag, overflow, taps and feature navigation' : ', text/link'));
+    console.log(width + '×' + height + ': Chrome mouse-to-touch conversion, slow card drags both ways, pointer capture and native pan cancelled before the threshold' + (width === 390 ? ', text/title/tags/link, all six cards, jitter/horizontal/cancel, rapid re-drag, overflow, taps and feature navigation' : ', text/link'));
     await page.close();
   }
 } finally {

@@ -692,7 +692,8 @@
       });
     }
     // 화면이 열리거나 창 크기가 바뀌면 다시 확인 (숨겨진 동안은 넘침을 잴 수 없어서)
-    if (window.ResizeObserver) new ResizeObserver(() => cnLintAll()).observe(document.getElementById("cn-list"));
+    // 경고 문구가 목록 높이를 바꾸므로 다음 프레임에서 갱신함
+    if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(cnLintAll)).observe(document.getElementById("cn-list"));
 
     // ----- 고친 내용 저장 (이 브라우저에만 저장) -----
     // 저장은 탭·세부 유형마다 따로 (예: cardnews_v3_notify_비례보상)

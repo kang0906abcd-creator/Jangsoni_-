@@ -15,7 +15,7 @@ export function setupJourney(root, tour, reduce, mascot, handoff) {
    scrollTrack.append(point);
    return point;
  });
- const phrases=['여기부터 살펴볼게요.','약관도 확인해 봐요.','코드도 찾아볼까요?','판례는 이쪽이에요.','논문도 같이 봐요.','음… 이것도 중요해요.','이제 정리해 볼까요?'];
+ const phrases=['약관도 확인해 봐요.','코드도 찾아볼까요?','판례는 이쪽이에요.','논문도 같이 봐요.','음… 이것도 중요해요.','이제 정리해 볼까요?'];
  const {avatar, frameCount, showJourneyPose}=mascot;
  const desktopJourney=window.matchMedia('(min-width: 721px)');
  const walkDuration=900;

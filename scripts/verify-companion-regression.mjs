@@ -9,7 +9,7 @@ execFileSync(process.execPath, ['scripts/build.mjs', '--check'], { cwd: root, st
 const preview = await serveTestPreview();
 const browser = await chromium.launch({ channel: 'chrome' });
 const key = 'jangsoni:companion-guides:v1';
-const screens = ['timeline', 'yakgwan', 'koicd', 'law', 'pubmed', 'fss', 'cardnews'];
+const screens = ['yakgwan', 'koicd', 'law', 'pubmed', 'fss', 'cardnews'];
 const reply = '현재 해당 기능은 개발중입니다!!';
 const file = name => ({ name, mimeType: 'text/plain', buffer: Buffer.from('test attachment') });
 
@@ -56,16 +56,16 @@ try {
     }
     assert.deepEqual(await page.evaluate(key => JSON.parse(sessionStorage.getItem(key)), key), screens);
     await page.reload(); await enter();
-    await page.locator('#menu [data-go=timeline]').click();
+    await page.locator('#menu [data-go=yakgwan]').click();
     assert.equal(await panel.isVisible(), false, 'Reload must retain this tab acknowledgement');
     const client = await context.newCDPSession(page);
     await Promise.all([page.waitForEvent('load'), client.send('Page.reload', { ignoreCache: true })]);
-    await enter(); await page.locator('#menu [data-go=timeline]').click();
+    await enter(); await page.locator('#menu [data-go=yakgwan]').click();
     assert.equal(await panel.isVisible(), false, 'Hard reload must retain acknowledgement');
 
     const independent = await context.newPage(); await independent.goto(url);
     await independent.locator('.hero-actions .landing-primary').click(); await independent.locator('#start').click();
-    await independent.locator('#menu [data-go=timeline]').click();
+    await independent.locator('#menu [data-go=yakgwan]').click();
     assert.equal(await independent.locator('#companion-chat').evaluate(el => el.matches(':modal')), true, 'Independent tab must show its first guide');
     await independent.close();
 
@@ -148,7 +148,7 @@ try {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     assert.equal(await dock.locator('.companion-closed-frame').evaluate(el => getComputedStyle(el).visibility), 'hidden');
     assert.deepEqual(errors, []);
-    console.log(mobile ? 'Mobile' : 'Desktop', 'seven first guides, full dismissal, tab/reload scope, hover hints, soft chat, IME, attachments, draft, local reply, natural blink, motion preference and desktop short/far drag');
+    console.log(mobile ? 'Mobile' : 'Desktop', 'six first guides, full dismissal, tab/reload scope, hover hints, soft chat, IME, attachments, draft, local reply, natural blink, motion preference and desktop short/far drag');
     await context.close();
   }
 } finally { await browser.close(); await preview.close(); }

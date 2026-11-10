@@ -100,7 +100,7 @@ try {
     assert.ok(card.y >= next.headerBottom - 2, 'The selected card must be readable below the fixed mascot');
     assert.ok(card.width > width - 45, 'Mobile cards must use the full available column');
     const speeches = new Set();
-    for (let index = 0; index < 7; index++) {
+    for (let index = 0; index < 6; index++) {
       await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), await point(index));
       await page.waitForTimeout(100);
       const state = await geometry();
@@ -112,7 +112,7 @@ try {
       assert.equal(await page.locator('.journey-step').nth(index).locator('.step-detail').evaluate(el => el.inert), false);
       speeches.add(state.text);
     }
-    assert.equal(speeches.size, 7, 'Every card must have its own spoken line');
+    assert.equal(speeches.size, 6, 'Every card must have its own spoken line');
     await page.waitForTimeout(1100);
     const stand = await page.locator('.mascot-atlas').getAttribute('viewBox');
     await page.waitForTimeout(150);
@@ -185,26 +185,26 @@ try {
       assert.equal(await page.locator('.mascot-atlas').getAttribute('viewBox'), stand, 'Arrival must stand still without starting a second walk');
       assert.equal(await page.locator('.step-toggle[aria-expanded="true"]').count(), 1);
       assert.ok(await page.locator('.journey-step').nth(index).locator('.step-detail').evaluate(el => el.getBoundingClientRect().height > 90));
-      for (let other = 0; other < 7; other++) if (other !== index) {
+      for (let other = 0; other < 6; other++) if (other !== index) {
         assert.ok(await page.locator('.journey-step').nth(other).locator('.step-detail').evaluate(el => el.inert && el.getBoundingClientRect().height < 1), 'Inactive cards must show their title only');
       }
     };
-    for (let index = 0; index < 7; index++) await cardSnap(index, 1, index === 2);
+    for (let index = 0; index < 6; index++) await cardSnap(index, 1, index === 2);
     const demo = await page.locator('.demo-section').evaluate(el => scrollY + el.getBoundingClientRect().top);
     await swipe(1);
     await page.waitForFunction(top => Math.abs(scrollY - top) < 2, demo);
     await page.waitForFunction(() => !('journeyTransition' in document.documentElement.dataset));
     await swipe(-1);
-    await page.waitForFunction(top => Math.abs(scrollY - top) < 2, await point(6));
+    await page.waitForFunction(top => Math.abs(scrollY - top) < 2, await point(5));
     await page.waitForTimeout(180);
-    for (let index = 5; index >= 0; index--) await cardSnap(index, -1);
+    for (let index = 4; index >= 0; index--) await cardSnap(index, -1);
     await swipe(-1);
     await page.waitForFunction(top => Math.abs(scrollY - top) < 2, entry.title);
     await page.waitForTimeout(180);
     assert.equal(await page.locator('.mascot-atlas').getAttribute('viewBox'), stand);
     await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), await point(0));
     await page.waitForTimeout(1100);
-    for (const index of [5, 2, 6, 0]) {
+    for (const index of [4, 2, 5, 0]) {
       await page.locator('.step-toggle').nth(index).tap();
       await page.waitForFunction(top => Math.abs(scrollY - top) < 2 && !('journeyTransition' in document.documentElement.dataset), await point(index));
       assert.equal(await page.locator('.step-toggle').nth(index).getAttribute('aria-expanded'), 'true');
@@ -251,7 +251,7 @@ try {
     assert.equal(await dock.getAttribute('data-grabbing'), null);
     assert.equal(await dock.getAttribute('data-dragging'), null);
     if (width === 390) {
-      const screens = ['timeline', 'yakgwan', 'koicd', 'law', 'pubmed', 'fss', 'cardnews'];
+      const screens = ['yakgwan', 'koicd', 'law', 'pubmed', 'fss', 'cardnews'];
       await page.locator('.journey-snap-point').first().evaluate(el => el.scrollIntoView({ block: 'start', behavior: 'instant' }));
       await page.waitForTimeout(1100);
       for (const [index, screen] of screens.entries()) {
@@ -266,7 +266,7 @@ try {
       }
     }
     assert.deepEqual(errors, []);
-    console.log(width + '×' + height, 'title entry, seven-card accordion swipe/tap, slow swipes on card text/titles/tags/buttons including list overflow, white active card, fixed mascot axis/small lift, standing, inactive focus exclusion, frame registration, tap/hold/flail and seven feature links at 390px');
+    console.log(width + '×' + height, 'title entry, six-card accordion swipe/tap, slow swipes on card text/titles/tags/buttons including list overflow, white active card, fixed mascot axis/small lift, standing, inactive focus exclusion, frame registration, tap/hold/flail and six feature links at 390px');
     await page.close();
   }
 } finally { await browser.close(); await preview.close(); }
