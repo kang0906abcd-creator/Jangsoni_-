@@ -12,10 +12,10 @@
 
 ## 웹 미리보기
 
-- [현대해상 스타일 사이트](https://wkdal1433.github.io/jangsoni/)
-- [휴대전화 접속 QR코드](docs/qr/jangsoni-hyundai.png)
+- [장손이 사이트](https://kang0906abcd-creator.github.io/Jangsoni_-/)
+- [휴대전화 접속 QR 코드](docs/qr/jangsoni-pages.png)
 
-`.github/workflows/pages.yml`은 `v2-hyundai-style`의 배포 HTML·QR·워크플로 변경을 GitHub Pages에 반영합니다. 소스를 수정한 뒤에는 `npm run build`와 검증을 완료하고 생성된 `index.html`을 함께 커밋하세요. 배포 파일은 `index.html`과 `qr.png`이며, 기존 main 브랜치를 변경하지 않습니다.
+`main`에 변경을 올리면 `.github/workflows/pages.yml`이 Node.js 24에서 `npm ci`와 `npm run build`를 실행하고, 생성한 `index.html`을 GitHub Pages에 게시합니다. QR 코드는 위 링크에서 내려받을 수 있습니다.
 
 ## 2. 이번 프로토타입에서 완료한 범위
 
@@ -66,7 +66,7 @@ npm run test:responsive
 ```
 
 - `test:scroll`: 둘러보기 열림/닫힘, 소개의 모든 섹션과 6개 카드의 정·역방향 전환, 빠른 휠 입력, 낮은 화면에서 긴 내용 읽기, 입력 중 일반 스크롤, 전환 중 화면 이동, 모바일 및 모션 감소 설정을 검사합니다.
-- `test:regression`: 로컬 `local-features`의 원본 HTML과 업무 코드·압축 데이터를 대조합니다. 입력 항목, 판정·검색·탭·필터, 모든 카드뉴스 양식, 실제 PNG 생성, 편집 저장·복구·초기화, 뒤로가기와 둘러보기 직접 진입을 검사합니다. 이동 기록, 분석 준비, 카드뉴스 크기 확인 시점의 코드 차이를 별도로 정규화합니다.
+- `test:regression`: `local-features`에 보존한 원본 HTML과 업무 코드·압축 데이터를 대조합니다. 입력 항목, 판정·검색·탭·필터, 모든 카드뉴스 양식, 실제 PNG 생성, 편집 저장·복구·초기화, 뒤로가기와 둘러보기 직접 진입을 검사합니다. 이동 기록, 분석 준비, 카드뉴스 크기 확인 시점의 코드 차이를 별도로 정규화합니다.
 - `test:companion`: 6개 메뉴의 첫 방문 안내, 확인·배경 클릭 후 완전 닫힘, 탭별 기록, 채팅·첨부·한글 조합 입력·임시 응답·깜빡임, 짧은/긴 드래그 복귀와 모바일 콘텐츠 여백을 검사합니다.
 - `test:mobile-mascot`: 모바일의 고정 수달 영역·왼쪽 말풍선·6개 카드별 멘트·실제 걷기 프레임과 터치 이벤트로 탭/길게 누르기/손가락 따라가기/버둥거림/놓기/취소를 검사합니다.
 - `test:mobile-pointer`: 실제 터치가 없는 PC 모바일 미리보기에서 마우스로 카드 본문·제목·태그·버튼을 끄는 동작, 취소/복구, 짧은 클릭, 기능 연결, 모션 감소 설정을 검사합니다.
@@ -82,7 +82,7 @@ npm run test:responsive
 
 모바일 둘러보기와 잡기 동작의 변경은 [2026-11-06 작업 기록](docs/2026-11-06-mobile-mascot.md), 생성 이미지와 프롬프트는 [이미지 생성 기록](docs/2026-11-06-mascot-image-prompts.md)에 정리했습니다.
 
-업무 비교 테스트는 외부 응답을 고정한 자료로 대체해 원본과 같은 조건에서 실행합니다. 실제 외부 서비스 연결 결과와는 구분합니다. 원본 비교에는 Git의 `local-features` 브랜치가 필요하며, 생성한 `index.html`이 소스와 맞지 않으면 검사를 시작하지 않습니다.
+업무 비교 테스트는 외부 응답을 고정한 자료로 대체해 원본과 같은 조건에서 실행합니다. 실제 외부 서비스 연결 결과와는 구분합니다. 원본 비교에는 `local-features`에 보존한 기준 커밋이 필요합니다. `main` 브랜치만 내려받은 경우 `git fetch origin local-features`를 실행하세요. 생성한 `index.html`이 소스와 맞지 않으면 검사를 시작하지 않습니다.
 
 ## UI 아이콘 규칙
 

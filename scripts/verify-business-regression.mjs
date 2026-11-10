@@ -9,7 +9,8 @@ import { serveTestPreview } from './test-preview.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 execFileSync(process.execPath, ['scripts/build.mjs', '--check'], { cwd: root, stdio: 'inherit' });
-const baselineRef = process.env.BASELINE_REF || 'local-features';
+// Original local feature snapshot, kept on the local-features branch.
+const baselineRef = process.env.BASELINE_REF || '5c0e5fbdb78391f2b2385ca7d3d8e62e731c44c5';
 const baseline = execFileSync('git', ['show', baselineRef + ':index.html'], { cwd: root, encoding: 'utf8', maxBuffer: 40 * 1024 * 1024 });
 const blocks = [...baseline.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];
 const original = blocks.find(block => block[2].includes('const SCREENS'))[2];
