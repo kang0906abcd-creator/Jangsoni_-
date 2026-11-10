@@ -7,6 +7,9 @@
  * 사이트에서 보낸 응답이 '설문응답' 시트에 한 줄씩 쌓입니다.
  */
 const SHEET_NAME = '설문응답';
+// 시트 메뉴(확장 프로그램 → Apps Script)로 만들지 않은 독립 스크립트라면 여기에 스프레드시트 ID를 넣는다.
+// (시트 주소 https://docs.google.com/spreadsheets/d/<이 부분>/edit)
+const SPREADSHEET_ID = '';
 const HEADERS = ['받은 시각', '제출 시각', '별점', '개선 제안', '화면', '계기', '기기', '화면 크기', '처리 상태'];
 const SCREEN_NAMES = {
   intro: '시작 화면', menu: '메뉴', yakgwan: '약관', fss: '분쟁조정', koicd: 'KCD',
@@ -17,7 +20,7 @@ const TRIGGER_NAMES = {
 };
 
 function sheet_() {
-  const book = SpreadsheetApp.getActiveSpreadsheet();
+  const book = SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
   let sheet = book.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = book.insertSheet(SHEET_NAME);
